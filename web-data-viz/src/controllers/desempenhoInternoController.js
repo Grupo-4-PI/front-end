@@ -4,7 +4,7 @@ function getDesemprenhoInterno(req, res) {
     var idEmpresa = req.query.idEmpresaServer;
     // var mes = req.query.mesServer;
     // var ano = req.query.anoServer;
-    var mes = 3;
+    var mes = 2;
     var ano = 2025;
 
     if (idEmpresa == undefined) {
