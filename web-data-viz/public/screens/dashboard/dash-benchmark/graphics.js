@@ -1,85 +1,78 @@
-// Dados do gráfico "Melhores Desempenhos"
-const melhoresLabels = ["Cobrança", "Contrato / Oferta", "Privacidade", "Atendimento SAC"];
-const melhoresData = {
-    labels: melhoresLabels,
-    datasets: [
-        {
-            label: 'Empresa',
-            data: [4.27, 4.25, 4.25, 4.13],
-            backgroundColor: '#1f77b4'
-        },
-        {
-            label: 'Mercado',
-            data: [3.83, 3.81, 3.67, 3.77],
-            backgroundColor: '#ae00d5ff '
-        }
-    ]
-};
 
-const melhoresConfig = {
-    type: 'bar',
-    data: melhoresData,
-    options: {
-        plugins: {
-            title: {
-                display: false,
+fetch("/benchmark/dadosBenchmark") // pega todos os dados
+  .then(res => res.json())
+  .then(dados => {
+    console.log("Benchmark:", dados);
+    montarGraficos(dados); // monta os gráficos
+  })
+  .catch(err => {
+    console.error("Erro ao buscar benchmark:", err);
+  });
+
+
+// ==========================
+// 2. FUNÇÃO QUE MONTA OS GRÁFICOS
+// ==========================
+function montarGraficos(dados) {
+
+    // ----- MELHORES DESEMPENHOS -----
+    const melhoresLabels = dados.melhores.map(item => item.grupo_problema);
+    const melhoresEmpresa = dados.melhores.map(item => item.media_empresa);
+    const melhoresMercado = dados.melhores.map(item => item.media_mercado);
+
+    const melhoresData = {
+        labels: melhoresLabels,
+        datasets: [
+            {
+                label: 'Empresa',
+                data: melhoresEmpresa,
+                backgroundColor: '#1f77b4'
+            },
+            {
+                label: 'Mercado',
+                data: melhoresMercado,
+                backgroundColor: '#ae00d5'
             }
-        },
-        responsive: true,
-        scales: {
-            y: {
-                beginAtZero: false,
-                min: 3.0,
-                max: 5.0
-            }
+        ]
+    };
+
+    new Chart(document.getElementById('melhoresDesempenhos'), {
+        type: 'bar',
+        data: melhoresData,
+        options: {
+            responsive: true,
+            scales: { y: { min: 3, max: 5 } }
         }
-    }
-};
+    });
 
-new Chart(
-    document.getElementById('melhoresDesempenhos'),
-    melhoresConfig
-);
 
-// Dados do gráfico "Piores Desempenhos"
-const pioresLabels = ["Informação","Saúde e Segu.", "Entrega do Prod.", "Vício de Quali.",];
-const pioresData = {
-    labels: pioresLabels,
-    datasets: [
-        {
-            label: 'Empresa',
-            data: [4.07, 3.61, 3.55, 3.51],
-            backgroundColor: '#1f77b4'
-        },
-        {
-            label: 'Mercado',
-            data: [3.72, 3.43, 3.51, 3.44],
-            backgroundColor: '#ae00d5ff'
-        }
-    ]
-};
+    // ----- PIORES DESEMPENHOS -----
+    const pioresLabels = dados.piores.map(item => item.grupo_problema);
+    const pioresEmpresa = dados.piores.map(item => item.media_empresa);
+    const pioresMercado = dados.piores.map(item => item.media_mercado);
 
-const pioresConfig = {
-    type: 'bar',
-    data: pioresData,
-    options: {
-        plugins: {
-            title: {
-                display: false
+    const pioresData = {
+        labels: pioresLabels,
+        datasets: [
+            {
+                label: 'Empresa',
+                data: pioresEmpresa,
+                backgroundColor: '#1f77b4'
+            },
+            {
+                label: 'Mercado',
+                data: pioresMercado,
+                backgroundColor: '#ae00d5'
             }
-        },
-        responsive: true,
-        scales: {
-            y: {
-                beginAtZero: false,
-                min: 3.0,
-                max: 5.0
-            }
-        }
-    }
-};
+        ]
+    };
 
-new Chart(
-    document.getElementById('pioresDesempenhos'),
-    pioresConfig
-);
+    new Chart(document.getElementById('pioresDesempenhos'), {
+        type: 'bar',
+        data: pioresData,
+        options: {
+            responsive: true,
+            scales: { y: { min: 3, max: 5 } }
+        }
+    });
+}

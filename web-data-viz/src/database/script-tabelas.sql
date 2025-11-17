@@ -2,8 +2,6 @@ create database airwise;
 
 use airwise;
 
-drop table usuario;
-
 CREATE TABLE empresa (
     idEmpresa INT AUTO_INCREMENT PRIMARY KEY,
     cnpj CHAR(14) NOT NULL,
@@ -17,7 +15,7 @@ CREATE TABLE usuario (
     nome VARCHAR(45) NOT NULL,
     cpf CHAR(11) NOT NULL,
     email VARCHAR(45) NOT NULL,
-    senha VARCHAR(45) NOT NULL UNIQUE,	
+    senha VARCHAR(45) NOT NULL,
     cargo VARCHAR(45),
     FOREIGN KEY (fkEmpresa) REFERENCES empresa(idEmpresa)
 );
@@ -44,6 +42,36 @@ CREATE TABLE chaveDeAcesso (
     FOREIGN KEY (fkEmpresa) REFERENCES empresa(idEmpresa)
 );
 
+CREATE TABLE reclamacoes (
+    id INT PRIMARY KEY AUTO_INCREMENT, 
+    uf VARCHAR(2),
+    cidade VARCHAR(255),
+    data_abertura DATE,
+    data_hora_resposta TIMESTAMP,
+    data_finalizacao DATE,
+    tempo_resposta INT,
+    nome_fantasia VARCHAR(255),
+    assunto VARCHAR(255),
+    grupo_problema VARCHAR(255),
+    problema TEXT,
+    forma_contrato VARCHAR(255),
+    respondida VARCHAR(50),
+    situacao VARCHAR(100),
+    avaliacao VARCHAR(100),
+    nota_consumidor INT,
+    codigo_anac VARCHAR(50),
+    fkEmpresa int,
+    FOREIGN KEY (fkEmpresa) REFERENCES empresa(idEmpresa)
+);
+
+CREATE TABLE log (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    logMensagem TEXT,
+    DataHora DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(7),
+    CONSTRAINT chk_status CHECK (status IN ('sucesso', 'erro'))
+);
+
 INSERT INTO empresa (cnpj, nomeFantasia, razaoSocial) VALUES
 ('11222333000144', 'AeroTech Solutions', 'AeroTech Solucoes Aeronauticas LTDA'),
 ('55666777000188', 'SkyHigh Analytics', 'SkyHigh Analise de Dados SA'),
@@ -65,6 +93,5 @@ INSERT INTO chaveDeAcesso (fkEmpresa, status, codigo, dataCriacao) VALUES
 (3, 1, 'INFRAAIR-KEY-2025-VALID', '2025-03-10');
 
 select * from usuario;
-
 
 select * from usuario where senha = md5('senhaForte123');
