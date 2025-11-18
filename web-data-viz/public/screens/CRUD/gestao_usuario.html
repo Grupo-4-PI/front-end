@@ -12,57 +12,6 @@
 </head>
 
 <body>
-  <!-- <aside class="sidebar">
-    <div class="sidebar-inner">
-      <div class="logo">
-        <img src="../../assets/logotipo/logotipo-airwise-pad-white.png" alt="Logo" />
-      </div>
-
-      <div class="brand">
-        <div class="user-info">
-          <div class="user-avatar">
-            <img
-              src="https://images.vexels.com/media/users/3/137047/isolated/preview/5831a17a290077c646a48c4db78a81bb-icone-azul-do-perfil-de-usuario.png"
-              alt="Usuário" />
-          </div>
-          <div class="user-details">
-            <h3>Vinícius</h3>
-            <p>Administrador</p>
-          </div>
-        </div>
-      </div>
-
-      <nav class="menu">
-        <a href="../dashboard/dash-geral/dash-main.html">
-          <i data-lucide="home"></i>
-          <span>Home</span>
-        </a>
-        <a href="../dashboard/dash-reclamacoes/dash-reclamacoes.html">
-          <i data-lucide="alert-triangle"></i>
-          <span>Reclamações</span>
-        </a>
-        <a href="#">
-          <i data-lucide="bar-chart-2"></i>
-          <span>Desempenho Interno</span>
-        </a>
-        <a href="../dashboard/dash-benchmark/dash-benchmark.html">
-          <i data-lucide="activity"></i>
-          <span>Benchmark</span>
-        </a>
-        <a href="../CRUD/gestao_usuario.html" class="active">
-          <i data-lucide="users"></i>
-          <span>Gestão de Usuários</span>
-        </a>
-      </nav>
-
-    </div>
-
-    <a href="../institucional/index.html" class="logout">
-      <i data-lucide="log-out"></i>
-      <span>Sair</span>
-    </a>
-  </aside> -->
-
   <aside class="sidebar" aria-label="Barra lateral de navegação">
     <header class="sidebar-top">
       <div class="container-header-company">
@@ -213,6 +162,13 @@
         <div class="form-box">
           <h2>Adicionar Profissional</h2>
           <form id="formAddProfissional">
+            <div style="display: none;">
+              <label for="empresa_add">ID da Empresa</label>
+              <input type="text" id="empresa_add" placeholder="Digite o ID da empresa" readonly />
+            </div>
+
+            <div style="display: none;"></div>
+
             <div>
               <label for="nome_add">Nome completo</label>
               <input type="text" id="nome_add" placeholder="Digite o nome completo" required />
@@ -230,22 +186,19 @@
 
             <div>
               <label for="cargo_add">Cargo</label>
-              <select id="cargo_add" required>
-                <option value="" disabled selected>Selecione o cargo</option>
-                <option value="Administrador">Administrador</option>
-                <option value="Técnico">Técnico</option>
-                <option value="Analista">Analista</option>
+              <input type="text" id="cargo_add" placeholder="Digite o Cargo do Funcionário" required />
+            </div>
+
+            <div>
+              <label for="perfil_add">Perfil</label>
+              <select id="perfil_add" required>
+                <option value="" disabled selected>Carregando...</option>
               </select>
             </div>
 
             <div>
               <label for="senha_add">Senha Padrão:</label>
               <input type="text" id="senha_add" placeholder="" value="AIRCORP23GOL" required disabled />
-            </div>
-
-            <div>
-              <label for="empresa_add">ID da Empresa</label>
-              <input type="text" id="empresa_add" placeholder="Digite o ID da empresa" required />
             </div>
 
             <button type="submit" class="btn-azul">Salvar</button>
@@ -285,6 +238,13 @@
                 <option value="Administrador">Administrador</option>
                 <option value="Técnico">Técnico</option>
                 <option value="Analista">Analista</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="perfil_edit">Perfil</label>
+              <select id="perfil_edit" required>
+                <option value="" disabled selected>Carregando...</option>
               </select>
             </div>
 
