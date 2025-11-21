@@ -10,8 +10,8 @@ const nomeEmpresaServer = nomeEmpresaBruto.nomeEmpresa;
 
 document.addEventListener("DOMContentLoaded", carregarDadosReclamacoes)
 
-function carregarDadosReclamacoes(nomeEmpresa) {
-    atualizarProblemaPrincipal(nomeEmpresa);
+function carregarDadosReclamacoes() {
+    atualizarProblemaPrincipal(nomeEmpresaServer);
     atualizarTopProblemas(nomeEmpresaServer);
     atualizarComparativo(nomeEmpresaServer);
     atualizarMapa(nomeEmpresaServer);
@@ -24,11 +24,11 @@ function atualizarProblemaPrincipal(nomeEmpresaServer) {
     const totalProblemaPrincipal = document.querySelector(".kpi-pp-total");
     const totalProblemaPrincipal2 = document.querySelector(".kpi-pp-total-2");
 
-    fetch(`/reclamacoes/problemaPrincipal?nomeEmpresaServer=${encodeURIComponent(nomeEmpresaServer)}`)
+    fetch(`/reclamacoes/getProblemaPrincipal?nomeEmpresaServer=${encodeURIComponent(nomeEmpresaServer)}`)
         .then(resposta => resposta.json())
         .then(dados => {
             problemaPrincipal.innerHTML = dados.problemaPrincipal;
-            percentualProblemaPrincipal.innerHTML = dados.percentualFinalizadas.replace('.',',');
+            percentualProblemaPrincipal.innerHTML = dados.percentualFinalizadas;
             totalProblemaPrincipal.innerHTML = dados.quantidadePrincipal;
             totalProblemaPrincipal2.innerHTML = dados.quantidadePrincipal;
         })
@@ -111,7 +111,7 @@ function atualizarMapa(nomeEmpresaServer) {
     if (map === null) {
         map = L.map('map', {
             center: [-15.78, -47.93],
-            zoom: 4, //zoom ajustado. Antes estava 100
+            zoom: 4,
             zoomControl: false,
             attributionControl: false
         });
@@ -124,13 +124,13 @@ function atualizarMapa(nomeEmpresaServer) {
         map.keyboard.disable();
     }
 
-    fetch(`/reclamacoes/getMapa?nomeEmpresaServer=${encodeURIComponent(nomeEmpresaServer)}`)
+    fetch(`/reclamacoes/getReclamacoesPorEstado?nomeEmpresaServer=${encodeURIComponent(nomeEmpresaServer)}`)
         .then(res => res.json())
         .then(dados => {
 
             const dadosMapa = {};
             dados.forEach(item => {
-                dadosMapa[item.uf] = item.qtdProblemas;
+                dadosMapa[item.uf.toUpperCase()] = item.qtdProblemas;
             });
 
             fetch('../../../map-states-local/brazil-states.geojson.txt')
@@ -171,12 +171,12 @@ function atualizarMapa(nomeEmpresaServer) {
 }
 
 function atualizarMatrizPrioridade(nomeEmpresaServer) {
-    fetch(`/reclamacoes/getMatriz?nomeEmpresaServer=${encodeURIComponent(nomeEmpresaServer)}`)
+    fetch(`/reclamacoes/getMatrizPrioridade?nomeEmpresaServer=${encodeURIComponent(nomeEmpresaServer)}`)
         .then(res => res.json())
         .then(dados => {
             const pontos = dados.map(item => ({
                 x: item.quantidade,
-                y: item.tmf,
+                y: Number(item.tmf),
                 group: item.grupo
             }));
         
@@ -188,6 +188,12 @@ function atualizarMatrizPrioridade(nomeEmpresaServer) {
             // garantindo que, se um ponto tiver no extremo do mapa, adicionamos uma margem 
             const maiorX = Math.max(...pontos.map(p => p.x)) * 1.1;
             const maiorY = Math.max(...pontos.map(p => p.y)) * 1.1;
+            const menorY = Math.min(...pontos.map(p => p.y))
+
+            const limiteEixoX = parseInt(maiorX * 1.15);
+            const limiteEixoY = parseInt(maiorY * 1.15);
+
+            const inicioEixoY = parseInt(menorY * 0.5);
 
             const ctx = document.getElementById('scatterChart').getContext('2d');
 
@@ -201,13 +207,13 @@ function atualizarMatrizPrioridade(nomeEmpresaServer) {
                     datasets: [
                         {
                             label: 'Grupos',
-                            data: points,
+                            data: pontos,
                             pointRadius: 8,
                             pointHoverRadius: 10,
-                            backgroundColor: 'rgba(0, 97, 216, 0.95)',
+                            backgroundColor: 'rgba(0, 97, 216, 0.8)',
                             
                             datalabels: {
-                                display: true,
+                                display: 'auto',
                                 formatter: v => v.group, 
                                 anchor: 'end',
                                 align: 'right',
@@ -221,7 +227,7 @@ function atualizarMatrizPrioridade(nomeEmpresaServer) {
                         {
                             label: `Média Qtd: ${mediaQtd.toFixed(0)}`,
                             type: 'line',
-                            data: [{ x: mediaQtd, y: 0 }, { x: mediaQtd, y: maiorY }],
+                            data: [{ x: mediaQtd, y: 0 }, { x: mediaQtd, y: limiteEixoY }],
                             borderColor: 'rgba(250,204,21,0.95)', 
                             borderWidth: 2,
                             pointRadius: 0,
@@ -232,7 +238,7 @@ function atualizarMatrizPrioridade(nomeEmpresaServer) {
                         {
                             label: `Média Tempo: ${mediaTempo.toFixed(1)}h`,
                             type: 'line',
-                            data: [{ x: 0, y: mediaTempo }, { x: maiorX, y: mediaTempo }],
+                            data: [{ x: 0, y: mediaTempo }, { x: limiteEixoX, y: mediaTempo }],
                             borderColor: 'rgba(52,211,153,0.95)', 
                             borderWidth: 2,
                             pointRadius: 0,
@@ -244,6 +250,9 @@ function atualizarMatrizPrioridade(nomeEmpresaServer) {
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    layout: {
+                        paddings: 20
+                    },
                     plugins: {
                         legend: { position: 'top' },
                         tooltip: {
@@ -259,11 +268,14 @@ function atualizarMatrizPrioridade(nomeEmpresaServer) {
                     scales: {
                         x: {
                             title: { display: true, text: 'Quantidade de Reclamações' },
-                            beginAtZero: true, 
+                            beginAtZero: true,
+                            max: limiteEixoX
                         },
                         y: {
-                            title: { display: true, text: 'Tempo Médio (Horas)' },
-                            beginAtZero: true
+                            title: { display: true, text: 'Tempo Médio de Finalização' },
+                            beginAtZero: false,
+                            min: inicioEixoY,
+                            max: limiteEixoY
                         }
                     }
                 },
