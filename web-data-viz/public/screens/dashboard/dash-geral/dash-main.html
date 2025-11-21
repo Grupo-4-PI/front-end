@@ -187,8 +187,8 @@
           const total_chamados_abertos = document.getElementById('total_chamados');
 
           nota_consumidores.textContent = kpis[0].media_nota_consumidor + "/5";
-          tempo_medio_resposta.textContent = kpis[0].media_tempo_resposta + "Horas";
-          taxa_solucao_chamados.textContent = kpis[0].total_respondidas;
+          tempo_medio_resposta.textContent = kpis[0].media_tempo_resposta + "hrs";
+          taxa_solucao_chamados.textContent = kpis[0].total_respondidas + "%";
           total_chamados_abertos.textContent = kpis[0].total_reclamacoes;
 
           const arrayGrafico1 = [];
@@ -196,19 +196,19 @@
           const arrayGrafico2nota = [];
           const arrayGrafico2uf = [];
 
-for (let G1 = 0; G1 < grafico1.length; G1++) {
-  arrayGrafico1.push(grafico1[G1].media_nota)
-}
+          for (let G1 = 0; G1 < grafico1.length; G1++) {
+            arrayGrafico1.push(grafico1[G1].media_nota)
+          }
 
-for (let G2 = 0; G2 < grafico2.length; G2++) {
- arrayGrafico2reclamacoes.push(grafico2[G2].total);
- arrayGrafico2nota.push(grafico2[G2].media_nota);
- arrayGrafico2uf.push(grafico2[G2].uf);
-}
+          for (let G2 = 0; G2 < grafico2.length; G2++) {
+            arrayGrafico2reclamacoes.push(grafico2[G2].total);
+            arrayGrafico2nota.push(grafico2[G2].media_nota);
+            arrayGrafico2uf.push(grafico2[G2].uf);
+          }
 
-grafico1NotaMedia(arrayGrafico1);
+          grafico1NotaMedia(arrayGrafico1);
 
-grafico2Estados(arrayGrafico2uf, arrayGrafico2nota, arrayGrafico2reclamacoes);
+          grafico2Estados(arrayGrafico2uf, arrayGrafico2nota, arrayGrafico2reclamacoes);
 
         })
         .catch((erro) => {
@@ -260,7 +260,7 @@ grafico2Estados(arrayGrafico2uf, arrayGrafico2nota, arrayGrafico2reclamacoes);
       });
     }
 
-    function grafico2Estados(uf , media_nota, total) {
+    function grafico2Estados(uf, media_nota, total) {
       const ctx2 = document.getElementById("graficoEstados").getContext("2d");
       new Chart(ctx2, {
         data: {
@@ -319,7 +319,7 @@ grafico2Estados(arrayGrafico2uf, arrayGrafico2nota, arrayGrafico2reclamacoes);
     }
 
 
-// Nome Usuario e cargo
+    // Nome Usuario e cargo
 
     const nome = document.getElementById('nome_usuario');
     const cargo = document.getElementById('cargo_usuario');
@@ -329,7 +329,7 @@ grafico2Estados(arrayGrafico2uf, arrayGrafico2nota, arrayGrafico2reclamacoes);
 
     cargo.textContent = dados_usuario.cargo;
 
-// ------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
 
   </script>
   <script src="../../../script/assets-aplicacao/sidebar.js"></script>

@@ -20,6 +20,7 @@ var usuarioRouter = require("./src/routes/usuarios");
 var visaoGeralRouter = require("./src/routes/visaoGeral")
 var perfilRouter = require("./src/routes/perfil")
 var desempenhoInterno = require("./src/routes/desempenhoInterno")
+var benchmarkRouter = require("./src/routes/benchmark")
 // var avisosRouter = require("./src/routes/avisos");
 // var medidasRouter = require("./src/routes/medidas");
 // var aquariosRouter = require("./src/routes/aquarios");
@@ -36,6 +37,7 @@ app.use("/usuarios", usuarioRouter);
 app.use("/visaoGeral", visaoGeralRouter);
 app.use("/perfil", perfilRouter);
 app.use("/desempenhoInterno", desempenhoInterno);
+app.use("/benchmark", benchmarkRouter);
 // app.use("/avisos", avisosRouter);
 // app.use("/medidas", medidasRouter);
 // app.use("/aquarios", aquariosRouter);

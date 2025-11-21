@@ -111,8 +111,8 @@
         </thead>
         <thead class="filters">
           <td><input type="text" placeholder="Nome:"></td>
-          <td><input type="text" placeholder="Nome:"></td>
-          <td><input type="text" placeholder="Nome:"></td>
+          <td><input type="text" placeholder="Cargo:"></td>
+          <td><input type="text" placeholder="Perfil:"></td>
           <td>
             <select name="" id="options-status">
               <option value="Todos">Todos</option>
@@ -123,33 +123,6 @@
         </thead>
         <tbody id="userList">
           <tr>
-            <td>Lucas</td>
-            <td>Analista</td>
-            <td>MKT - Senior</td>
-            <td>Ativo</td>
-            <td class="methods-crud">
-              <span class="action-btn edit" onclick="abrirModal('modalEditProfissional')">
-                <i class='bx bx-edit'></i>
-              </span>
-              <span class="action-btn delete" onclick="abrirModal('modalDeleteProfissional')">
-                <i class='bx bx-trash'></i>
-              </span>
-            </td>
-          </tr>
-
-          <tr>
-            <td>Lucas</td>
-            <td>Analista</td>
-            <td>MKT - Senior</td>
-            <td>Ativo</td>
-            <td class="methods-crud">
-              <span class="action-btn edit">
-                <i class='bx bx-edit'></i>
-              </span>
-              <span class="action-btn delete">
-                <i class='bx bx-trash'></i>
-              </span>
-            </td>
           </tr>
         </tbody>
       </table>
@@ -255,8 +228,6 @@
       </div>
     </div>
 
-
-
     <!-- MODAL: Deletar Profissional -->
     <div id="modalDeleteProfissional" class="modal hidden">
       <div class="container">
@@ -278,10 +249,6 @@
 
   <script src="./modal.js"></script>
   <script src="../../script/assets-aplicacao/sidebar.js"></script>
-
-  <!-- <script>
-    lucide.createIcons();
-  </script> -->
 </body>
 
 </html>
