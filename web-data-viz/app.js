@@ -21,6 +21,7 @@ var visaoGeralRouter = require("./src/routes/visaoGeral")
 var reclamacoesRouter = require("./src/routes/reclamacoes")
 var perfilRouter = require("./src/routes/perfil")
 var desempenhoInterno = require("./src/routes/desempenhoInterno")
+var benchmarkRouter = require("./src/routes/benchmark")
 // var avisosRouter = require("./src/routes/avisos");
 // var medidasRouter = require("./src/routes/medidas");
 // var aquariosRouter = require("./src/routes/aquarios");
@@ -38,6 +39,7 @@ app.use("/visaoGeral", visaoGeralRouter);
 app.use("/reclamacoes", reclamacoesRouter);
 app.use("/perfil", perfilRouter);
 app.use("/desempenhoInterno", desempenhoInterno);
+app.use("/benchmark", benchmarkRouter);
 // app.use("/avisos", avisosRouter);
 // app.use("/medidas", medidasRouter);
 // app.use("/aquarios", aquariosRouter);

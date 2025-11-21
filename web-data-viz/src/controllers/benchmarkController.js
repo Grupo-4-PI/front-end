@@ -1,20 +1,15 @@
 var benchmarkModel = require("../models/benchmarkModel");
 
 function getBenchmarkData(req, res) {
-    var mes = req.query.mes; // pode ser undefined
+    var mes = req.query.mes;
+    var idEmpresa = req.query.idEmpresa;
 
     // Se mes existir, busca apenas esse mês; se não, busca todos os meses
-    var melhoresPromise = mes
-        ? benchmarkModel.getMelhoresNotas(mes).catch(() => null)
-        : benchmarkModel.getMelhoresNotasTodosMeses().catch(() => null);
+    var melhoresPromise = benchmarkModel.getMelhoresNotas(idEmpresa, mes).catch(() => null);
 
-    var pioresPromise = mes
-        ? benchmarkModel.getPioresNotas(mes).catch(() => null)
-        : benchmarkModel.getPioresNotasTodosMeses().catch(() => null);
+    var pioresPromise = benchmarkModel.getPioresNotas(idEmpresa, mes).catch(() => null);
 
-    var mediaPromise = mes
-        ? benchmarkModel.getMediaGeral(mes).catch(() => null)
-        : benchmarkModel.getMediaGeralTodosMeses().catch(() => null);
+    var mediaPromise = benchmarkModel.getMediaGeral(idEmpresa, mes).catch(() => null);
 
     Promise.all([melhoresPromise, pioresPromise, mediaPromise])
         .then(([melhoresRes, pioresRes, mediaRes]) => {

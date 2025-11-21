@@ -1,19 +1,17 @@
 let usuarioSelecionado = null;
 let listaPerfis = [];
 
-
-
 const dataUser = JSON.parse(sessionStorage.getItem("data_user"));
 const idEmpresa = dataUser.fkEmpresa || dataUser.idEmpresa;
 
 document.addEventListener("DOMContentLoaded", () => {
     carregarUsuarios();
     empresa_add.value = idEmpresa;
-
     carregarPerfis();
+    iniciarFiltros();
 });
 
-
+// CARREGAR PERFIS
 function carregarPerfis() {
     fetch(`/perfil/findAll`)
         .then(res => res.json())
@@ -28,22 +26,15 @@ function carregarPerfis() {
                 selectEdit.innerHTML = `<option value="" disabled selected>Selecione o Perfil</option>`;
 
             perfis.perfis.forEach(p => {
-                const optionHTML =
-                    `<option value="${p.idTipoAcesso}">${p.nome}</option>`;
-
+                const optionHTML = `<option value="${p.idTipoAcesso}">${p.nome}</option>`;
                 selectAdd.innerHTML += optionHTML;
-
-                if (selectEdit)
-                    selectEdit.innerHTML += optionHTML;
+                if (selectEdit) selectEdit.innerHTML += optionHTML;
             });
         })
         .catch(err => console.error("Erro ao carregar perfis:", err));
 }
 
-
-
-// CARREGAR USUÁRIOS DA EMPRESA
-
+// CARREGAR USUÁRIOS
 function carregarUsuarios() {
     fetch(`/usuarios/findAll/${idEmpresa}`)
         .then(res => res.json())
@@ -53,7 +44,7 @@ function carregarUsuarios() {
         .catch(err => console.error("Erro ao buscar usuários:", err));
 }
 
-// BUSCAR PERFIL PELO ID — AGORA RETORNA UMA PROMISE
+// BUSCAR PERFIL
 async function procurarPerfil(acesso) {
     try {
         const res = await fetch(`/perfil/findAll`);
@@ -68,9 +59,7 @@ async function procurarPerfil(acesso) {
     }
 }
 
-
-
-// RENDERIZAR DADOS DOS FUNCIONÁRIOS
+// RENDERIZAR TABELA
 async function renderizarTabela(lista) {
     const tbody = document.getElementById("userList");
     tbody.innerHTML = "";
@@ -104,10 +93,47 @@ async function renderizarTabela(lista) {
 
         tbody.appendChild(tr);
     });
+
+    aplicarFiltros();
 }
 
+// FILTROS
+function iniciarFiltros() {
+    const filtroNome = document.querySelector(".filters td:nth-child(1) input");
+    const filtroCargo = document.querySelector(".filters td:nth-child(2) input");
+    const filtroPerfil = document.querySelector(".filters td:nth-child(3) input");
+    const filtroStatus = document.querySelector("#options-status");
 
+    filtroNome.addEventListener("input", aplicarFiltros);
+    filtroCargo.addEventListener("input", aplicarFiltros);
+    filtroPerfil.addEventListener("input", aplicarFiltros);
+    filtroStatus.addEventListener("change", aplicarFiltros);
+}
 
+function aplicarFiltros() {
+    const nomeFiltro = document.querySelector(".filters td:nth-child(1) input").value.toLowerCase();
+    const cargoFiltro = document.querySelector(".filters td:nth-child(2) input").value.toLowerCase();
+    const perfilFiltro = document.querySelector(".filters td:nth-child(3) input").value.toLowerCase();
+    const statusFiltro = document.querySelector("#options-status").value;
+
+    const linhas = document.querySelectorAll("#userList tr");
+
+    linhas.forEach(linha => {
+        const nome = linha.children[0].textContent.toLowerCase();
+        const cargo = linha.children[1].textContent.toLowerCase();
+        const perfil = linha.children[2].textContent.toLowerCase();
+        const status = linha.children[3].textContent;
+
+        let exibir = true;
+
+        if (nomeFiltro && !nome.includes(nomeFiltro)) exibir = false;
+        if (cargoFiltro && !cargo.includes(cargoFiltro)) exibir = false;
+        if (perfilFiltro && !perfil.includes(perfilFiltro)) exibir = false;
+        if (statusFiltro !== "Todos" && status !== statusFiltro) exibir = false;
+
+        linha.style.display = exibir ? "" : "none";
+    });
+}
 
 // CADASTRAR FUNCIONÁRIO
 document.getElementById("formAddProfissional").addEventListener("submit", function (e) {
@@ -140,8 +166,6 @@ document.getElementById("formAddProfissional").addEventListener("submit", functi
         .catch(err => console.error("Erro:", err));
 });
 
-
-
 // EDITAR FUNCIONÁRIO
 function abrirModalEditar(idUsuario) {
     usuarioSelecionado = idUsuario;
@@ -157,7 +181,6 @@ function abrirModalEditar(idUsuario) {
                 email_edit.value = usuario.email;
                 cargo_edit.value = usuario.cargo;
 
-                // Ajusta select de perfil
                 if (document.getElementById("perfil_edit"))
                     perfil_edit.value = usuario.fkTipoAcesso;
 
@@ -165,8 +188,6 @@ function abrirModalEditar(idUsuario) {
             }
         });
 }
-
-
 
 document.getElementById("formEditProfissional").addEventListener("submit", function (e) {
     e.preventDefault();
@@ -197,14 +218,11 @@ document.getElementById("formEditProfissional").addEventListener("submit", funct
         });
 });
 
-
-
-// INATIVAR/DELETAR FUNCIONÁRIO
+// INATIVAR/ATIVAR FUNCIONÁRIO
 function abrirModalExcluir(idUsuario) {
     usuarioSelecionado = idUsuario;
     abrirModal("modalDeleteProfissional");
 }
-
 
 document.getElementById("confirmDeleteBtn").addEventListener("click", function () {
     fetch(`/usuarios/inativar/${usuarioSelecionado}`, {
@@ -221,9 +239,6 @@ document.getElementById("confirmDeleteBtn").addEventListener("click", function (
         });
 });
 
-
-
-// ATIVAR FUNCIONÁRIO
 function ativarUsuario(idUsuario) {
     fetch(`/usuarios/ativar/${idUsuario}`, {
         method: "PUT"
@@ -238,9 +253,7 @@ function ativarUsuario(idUsuario) {
         });
 }
 
-
-
-// FUNÇÕES DE MODAL
+// MODAIS
 function abrirModal(modal) {
     document.getElementById(modal).classList.remove('hidden');
 }

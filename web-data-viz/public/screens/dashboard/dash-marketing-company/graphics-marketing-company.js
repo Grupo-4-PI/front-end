@@ -222,7 +222,7 @@ function graficoEvolucao(dadosEmpresa, dadosMercado) {
                     ticks: { color: '#666' }
                 },
                 y: {
-                    min: 2.5,
+                    min: 0,
                     max: 5.0,
                     ticks: {
                         stepSize: 0.5,
