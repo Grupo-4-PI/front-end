@@ -18,6 +18,7 @@ var app = express();
 var indexRouter = require("./src/routes/index");
 var usuarioRouter = require("./src/routes/usuarios");
 var visaoGeralRouter = require("./src/routes/visaoGeral")
+var reclamacoesRouter = require("./src/routes/reclamacoes")
 var perfilRouter = require("./src/routes/perfil")
 var desempenhoInterno = require("./src/routes/desempenhoInterno")
 var benchmarkRouter = require("./src/routes/benchmark")
@@ -35,6 +36,7 @@ app.use(cors());
 app.use("/", indexRouter);
 app.use("/usuarios", usuarioRouter);
 app.use("/visaoGeral", visaoGeralRouter);
+app.use("/reclamacoes", reclamacoesRouter);
 app.use("/perfil", perfilRouter);
 app.use("/desempenhoInterno", desempenhoInterno);
 app.use("/benchmark", benchmarkRouter);

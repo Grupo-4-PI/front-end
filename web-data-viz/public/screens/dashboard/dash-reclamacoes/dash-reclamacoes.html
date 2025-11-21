@@ -119,10 +119,10 @@
 
                     <div class="data-problem">
                         <div class="number-data" aria-hidden="false">
-                            <h2>55,41%</h2>
-                            <p class="muted">de 3771</p>
+                            <h2><span class="kpi-pp-percentual">55,41</span>%</h2>
+                            <p class="muted">de <span class="kpi-pp-total">3771</span></p>
                         </div>
-                        <p class="muted">Foram Resolvidos <br> de <span style="color: rgb(0, 75, 156);">3771</span></p>
+                        <p class="muted">Foram Resolvidos <br> de <span class="kpi-pp-total-2" style="color: rgb(0, 75, 156);">3771</span></p>
                     </div>
                 </div>
             </div>
@@ -138,7 +138,7 @@
                         <div class="container-bars">
                             <div class="data-company">
                                 <div class="bars">
-                                    <div class="bar company" style="height: 85%;">4,03</div>
+                                    <div id="bar-nota-empresa" class="bar company" style="height: 85%;">4,03</div>
                                 </div>
                                 <div class="bar-labels">
                                     <span>Empresa</span>
@@ -147,7 +147,7 @@
 
                             <div class="data-competitor">
                                 <div class="bars">
-                                    <div class="bar competitor" style="height: 75%;">3,69</div>
+                                    <div id="bar-nota-concorrentes" class="bar competitor" style="height: 75%;">3,69</div>
                                 </div>
                                 <div class="bar-labels">
                                     <span>Concorrente</span>
@@ -163,7 +163,7 @@
                         <div class="container-bars">
                             <div class="data-company">
                                 <div class="bars">
-                                    <div class="bar company" style="height: 85%;">15.55hrs</div>
+                                    <div id="bar-tmr-empresa" class="bar company" style="height: 85%;">15.55hrs</div>
                                 </div>
                                 <div class="bar-labels">
                                     <span>Empresa</span>
@@ -172,7 +172,7 @@
 
                             <div class="data-competitor">
                                 <div class="bars">
-                                    <div class="bar competitor" style="height: 75%;">15.04hrs</div>
+                                    <div id="bar-tmr-concorrentes" class="bar competitor" style="height: 75%;">15.04hrs</div>
                                 </div>
                                 <div class="bar-labels">
                                     <span>Concorrente</span>
@@ -187,7 +187,7 @@
             <div class="rank-mains-problema card" aria-label="Top problemas">
                 <h2>Top 3 — Problemas mais frequentes</h2>
 
-                <div class="list-rank" role="list">
+                <div class="list-rank" id="container-top-problemas" role="list">
                     <div class="problem-rank" role="listitem" data-count="270">
                         <div class="rank-left">
                             <div class="badge">1</div>
@@ -284,6 +284,6 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="./graphics.js"></script>
+<script src="reclamacoes.js"></script>
 
 </html>
