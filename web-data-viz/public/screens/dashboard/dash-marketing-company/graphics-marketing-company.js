@@ -70,9 +70,20 @@ function atualizarPanoramaKPI(kpis) {
     const panorama = document.querySelectorAll(".info .company");
 
     for (let index = 0; index < kpis.length; index++) {
-        panorama[index].textContent = kpis[index].nomeFantasia;
+        let nome = kpis[index].nomeFantasia || "";
+
+        let primeiroNome = nome.split(" ")[0];
+
+        let formatado =
+            primeiroNome.charAt(0).toUpperCase() +
+            primeiroNome.slice(1).toLowerCase();
+
+        panorama[index].textContent = formatado;
     }
 }
+
+
+
 
 // 5. ATUALIZAR RANKING DA EMPRESA
 function atualizarRanking(ranking) {
@@ -89,10 +100,27 @@ function atualizarNotaMedia(notaMedia) {
     const notaMediaEmpresa = document.getElementById("scoreText");
     const notaMediaComparativo = document.querySelectorAll(".kpi .data");
 
-    notaMediaEmpresa.textContent = notaMedia[0].media_empresa + "/5";
+    const valor = notaMedia[0].media_empresa;
+    notaMediaEmpresa.textContent = valor + "/5";
     notaMediaComparativo[0].textContent = notaMedia[0].media_mercado + "/5";
     notaMediaComparativo[1].textContent = notaMedia[0].variacao + "%";
     notaMediaComparativo[2].textContent = notaMedia[0].delta;
+
+    const circle = document.querySelector(".circle-base");
+    if (circle) {
+        const graus = (valor / 5) * 150;
+
+        circle.style.background = `
+            conic-gradient(
+                #008d21 0deg ${graus}deg,
+                #e9e9e9 ${graus}deg 360deg
+            )
+        `;
+    }
+
+    const porcentagem = (valor / 5) * 100;
+    const fill = document.getElementById("scoreBarFill");
+    if (fill) fill.style.width = porcentagem + "%";
 }
 
 let scoreChartInstance = null;
