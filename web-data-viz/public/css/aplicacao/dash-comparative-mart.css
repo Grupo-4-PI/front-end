@@ -73,6 +73,7 @@ main {
                             display: flex;
                             flex-direction: column;
                             align-items: center;
+                            width: 160px;
                         }
 
                         .icon-problem {
@@ -84,7 +85,6 @@ main {
                             z-index: 3;
                             box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
                             border: 2px solid rgb(255, 255, 255);
-                            margin-bottom: 20px;
                         }
 
                         .type-problem {
@@ -96,6 +96,7 @@ main {
                             display: flex;
                             align-items: center;
                             justify-content: center;
+                            width: 80%;
                         }
 
                         .data-score {
@@ -271,14 +272,13 @@ main {
                     background-color: rgb(35, 234, 31);
                 }
 
-                .gauge-arc.company::before {
-                    transform: rotate(170deg);
-                }
-
+                .gauge-arc.company::before,
                 .gauge-arc.mart::before {
-                    transform: rotate(160deg);
+                    transform: rotate(var(--gauge-rotation, 0deg));
                 }
             }
+
+
         }
     }
 
@@ -286,7 +286,7 @@ main {
         flex: 1;
         display: flex;
         gap: 20px;
-        
+
         .graphic {
             padding: 13px;
             border-radius: 10px;
