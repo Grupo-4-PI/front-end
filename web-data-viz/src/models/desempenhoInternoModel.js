@@ -1,165 +1,157 @@
 var database = require("../database/config");
 
-function getPanoramaKPI( mes, ano) {
-  var instrucaoSql = `SELECT 
-    e.idEmpresa,
-    e.nomeFantasia,
-    MONTH(r.data_abertura) AS mes,
-    YEAR(r.data_abertura) AS ano,
-    ROUND(AVG(r.nota_consumidor), 2) AS mediaNota
-FROM empresa e
-JOIN reclamacoes r ON r.fkEmpresa = e.idEmpresa
-WHERE MONTH(r.data_abertura) = ${mes}
-  AND YEAR(r.data_abertura) = ${ano}
-GROUP BY 
-    e.idEmpresa, 
-    e.nomeFantasia, 
-    MONTH(r.data_abertura),
-    YEAR(r.data_abertura)
-ORDER BY mediaNota DESC
-LIMIT 3;
-`;
+// ---------------- PANORAMA (TOP 3 MELHORES) ----------------
+function getPanoramaKPI(mes) {
+  var instrucaoSql = `
+    SELECT 
+        e.idEmpresa,
+        e.nomeFantasia,
+        DATE_FORMAT(r.data_abertura, '%Y-%m') AS mes,
+        TRUNCATE(AVG(r.nota_consumidor), 2) AS mediaNota
+    FROM empresa e
+    JOIN reclamacoes r ON r.fkEmpresa = e.idEmpresa
+    WHERE DATE_FORMAT(r.data_abertura, '%Y-%m') = '${mes}'
+    GROUP BY 
+        e.idEmpresa, 
+        e.nomeFantasia,
+        DATE_FORMAT(r.data_abertura, '%Y-%m')
+    ORDER BY mediaNota DESC
+    LIMIT 3;
+  `;
 
-  console.log("Executando a instrução SQL: \n" + instrucaoSql);
+  console.log("Executando SQL PanoramaKPI:\n" + instrucaoSql);
   return database.executar(instrucaoSql);
 }
 
-function getNotaMedia( idEmpresa, mes, ano) {
-  var instrucaoSql = `SELECT 
-    TRUNCATE(AVG(CASE WHEN fkEmpresa = ${idEmpresa} THEN nota_consumidor END), 2) AS media_empresa,
-    TRUNCATE(AVG(CASE WHEN fkEmpresa <> ${idEmpresa} THEN nota_consumidor END), 2) AS media_mercado,
-    TRUNCATE(
-        AVG(CASE WHEN fkEmpresa = ${idEmpresa} THEN nota_consumidor END) -
-        AVG(CASE WHEN fkEmpresa <> ${idEmpresa} THEN nota_consumidor END)
-    , 2) AS variacao,
-    TRUNCATE(
-        ABS(
+// ---------------- MÉDIA EMPRESA x MERCADO ----------------
+function getNotaMedia(idEmpresa, mes) {
+  var instrucaoSql = `
+    SELECT 
+        TRUNCATE(AVG(CASE WHEN fkEmpresa = ${idEmpresa} THEN nota_consumidor END), 2) AS media_empresa,
+        TRUNCATE(AVG(CASE WHEN fkEmpresa <> ${idEmpresa} THEN nota_consumidor END), 2) AS media_mercado,
+
+        TRUNCATE(
             AVG(CASE WHEN fkEmpresa = ${idEmpresa} THEN nota_consumidor END) -
             AVG(CASE WHEN fkEmpresa <> ${idEmpresa} THEN nota_consumidor END)
-        )
-    , 2) AS delta
-FROM reclamacoes
-WHERE MONTH(data_abertura) = ${mes}
-  AND YEAR(data_abertura) = ${ano};`
+        , 2) AS variacao,
 
-  console.log("Executando a instrução SQL: \n" + instrucaoSql);
+        TRUNCATE(
+            ABS(
+                AVG(CASE WHEN fkEmpresa = ${idEmpresa} THEN nota_consumidor END) -
+                AVG(CASE WHEN fkEmpresa <> ${idEmpresa} THEN nota_consumidor END)
+            )
+        , 2) AS delta
+    FROM reclamacoes
+    WHERE DATE_FORMAT(data_abertura, '%Y-%m') = '${mes}';
+  `;
+
+  console.log("Executando SQL NotaMedia:\n" + instrucaoSql);
   return database.executar(instrucaoSql);
 }
 
-
+// ---------------- RANKING DA EMPRESA ----------------
 function getRankingEmpresa(idEmpresa) {
-  var instrucaoSql = `SELECT 
-    idEmpresa,
-    nomeFantasia,
-    mes,
-    ano,
-    posicao
-FROM (
+  var instrucaoSql = `
     SELECT 
         idEmpresa,
         nomeFantasia,
         mes,
         ano,
-        mediaNota,
-        RANK() OVER (PARTITION BY ano, mes ORDER BY mediaNota DESC) AS posicao
+        posicao
     FROM (
         SELECT 
-            e.idEmpresa,
-            e.nomeFantasia,
-            MONTH(r.data_abertura) AS mes,
-            YEAR(r.data_abertura) AS ano,
-            ROUND(AVG(r.nota_consumidor), 2) AS mediaNota
-        FROM empresa e
-        JOIN reclamacoes r ON r.fkEmpresa = e.idEmpresa
-        GROUP BY 
-            e.idEmpresa, 
-            e.nomeFantasia,
-            MONTH(r.data_abertura),
-            YEAR(r.data_abertura)
-    ) AS medias
-) AS ranking
-WHERE idEmpresa = ${idEmpresa};`;
+            idEmpresa,
+            nomeFantasia,
+            mes,
+            ano,
+            mediaNota,
+            RANK() OVER (PARTITION BY ano, mes ORDER BY mediaNota DESC) AS posicao
+        FROM (
+            SELECT 
+                e.idEmpresa,
+                e.nomeFantasia,
+                MONTH(r.data_abertura) AS mes,
+                YEAR(r.data_abertura) AS ano,
+                TRUNCATE(AVG(r.nota_consumidor), 2) AS mediaNota
+            FROM empresa e
+            JOIN reclamacoes r ON r.fkEmpresa = e.idEmpresa
+            GROUP BY 
+                e.idEmpresa, 
+                e.nomeFantasia,
+                MONTH(r.data_abertura),
+                YEAR(r.data_abertura)
+        ) AS medias
+    ) AS ranking
+    WHERE idEmpresa = ${idEmpresa};
+  `;
 
-  console.log("Executando a instrução SQL: \n" + instrucaoSql);
+  console.log("Executando SQL RankingEmpresa:\n" + instrucaoSql);
   return database.executar(instrucaoSql);
 }
 
-function getGraficoMapaDeltaMercado(idEmpresa, mes, ano) {
-  var instrucaoSql = `SELECT 
-    r.uf,
-    
-    -- Média da sua empresa
-    TRUNCATE(AVG(CASE WHEN r.fkEmpresa = 1 THEN r.nota_consumidor END), 2) 
-        AS media_empresa,
-    
-    -- Média do mercado (todas as outras)
-    TRUNCATE(AVG(CASE WHEN r.fkEmpresa <> ${idEmpresa} THEN r.nota_consumidor END), 2) 
-        AS media_mercado,
+// ---------------- MAPA DELTA POR UF ----------------
+function getGraficoMapaDeltaMercado(idEmpresa, mes) {
+  var instrucaoSql = `
+    SELECT 
+        r.uf,
 
-    -- Diferença direta
-    TRUNCATE(
-        AVG(CASE WHEN r.fkEmpresa = ${idEmpresa} THEN r.nota_consumidor END)
-        -
-        AVG(CASE WHEN r.fkEmpresa <> ${idEmpresa} THEN r.nota_consumidor END)
-    , 2) AS variacao,
+        TRUNCATE(AVG(CASE WHEN r.fkEmpresa = ${idEmpresa} THEN r.nota_consumidor END), 2) AS media_empresa,
 
-    -- Delta absoluto
-    TRUNCATE(
-        ABS(
+        TRUNCATE(AVG(CASE WHEN r.fkEmpresa <> ${idEmpresa} THEN r.nota_consumidor END), 2) AS media_mercado,
+
+        TRUNCATE(
             AVG(CASE WHEN r.fkEmpresa = ${idEmpresa} THEN r.nota_consumidor END)
-            -
-            AVG(CASE WHEN r.fkEmpresa <> ${idEmpresa} THEN r.nota_consumidor END)
-        )
-    , 2) AS delta
+            - AVG(CASE WHEN r.fkEmpresa <> ${idEmpresa} THEN r.nota_consumidor END)
+        , 2) AS variacao,
 
-FROM reclamacoes r
-WHERE MONTH(r.data_abertura) = ${mes}
-  AND YEAR(r.data_abertura) = ${ano}
-GROUP BY r.uf
-ORDER BY delta DESC; `;
+        TRUNCATE(
+            ABS(
+                AVG(CASE WHEN r.fkEmpresa = ${idEmpresa} THEN r.nota_consumidor END)
+                - AVG(CASE WHEN r.fkEmpresa <> ${idEmpresa} THEN r.nota_consumidor END)
+            )
+        , 2) AS delta
 
-  console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    FROM reclamacoes r
+    WHERE DATE_FORMAT(r.data_abertura, '%Y-%m') = '${mes}'
+    GROUP BY r.uf
+    ORDER BY delta DESC;
+  `;
+
+  console.log("Executando SQL GraficoMapaDeltaMercado:\n" + instrucaoSql);
   return database.executar(instrucaoSql);
 }
 
+// ---------------- EVOLUÇÃO MENSAL ----------------
 function getGraficoEvolucao(idEmpresa, ano) {
-  var instrucaoSql = `SELECT
-    MONTH(r.data_abertura) AS mes,
-    YEAR(r.data_abertura) AS ano,
+  var instrucaoSql = `
+    SELECT
+        DATE_FORMAT(r.data_abertura, '%Y-%m') AS mes,
 
-    TRUNCATE(AVG(CASE WHEN r.fkEmpresa = ${idEmpresa} THEN r.nota_consumidor END), 2)
-        AS media_empresa,
+        TRUNCATE(AVG(CASE WHEN r.fkEmpresa = ${idEmpresa} THEN r.nota_consumidor END), 2) AS media_empresa,
 
+        TRUNCATE(AVG(CASE WHEN r.fkEmpresa <> ${idEmpresa} THEN r.nota_consumidor END), 2) AS media_mercado,
 
-    TRUNCATE(AVG(CASE WHEN r.fkEmpresa <> ${idEmpresa} THEN r.nota_consumidor END), 2)
-        AS media_mercado,
-
-    TRUNCATE(
-        AVG(CASE WHEN r.fkEmpresa = ${idEmpresa} THEN r.nota_consumidor END)
-        -
-        AVG(CASE WHEN r.fkEmpresa <> ${idEmpresa} THEN r.nota_consumidor END)
-    , 2) AS variacao,
-
-
-    TRUNCATE(
-        ABS(
+        TRUNCATE(
             AVG(CASE WHEN r.fkEmpresa = ${idEmpresa} THEN r.nota_consumidor END)
-            -
-            AVG(CASE WHEN r.fkEmpresa <> ${idEmpresa} THEN r.nota_consumidor END)
-        )
-    , 2) AS delta
+            - AVG(CASE WHEN r.fkEmpresa <> ${idEmpresa} THEN r.nota_consumidor END)
+        , 2) AS variacao,
 
-FROM reclamacoes r
-WHERE YEAR(r.data_abertura) = ${ano}
-GROUP BY 
-    MONTH(r.data_abertura),
-    YEAR(r.data_abertura)
-ORDER BY ano, mes;`
+        TRUNCATE(
+            ABS(
+                AVG(CASE WHEN r.fkEmpresa = ${idEmpresa} THEN r.nota_consumidor END)
+                - AVG(CASE WHEN r.fkEmpresa <> ${idEmpresa} THEN r.nota_consumidor END)
+            )
+        , 2) AS delta
 
-  console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    FROM reclamacoes r
+    WHERE YEAR(r.data_abertura) = ${ano}
+    GROUP BY DATE_FORMAT(r.data_abertura, '%Y-%m')
+    ORDER BY mes;
+  `;
+
+  console.log("Executando SQL GraficoEvolucao:\n" + instrucaoSql);
   return database.executar(instrucaoSql);
 }
-
 
 module.exports = {
   getPanoramaKPI,
