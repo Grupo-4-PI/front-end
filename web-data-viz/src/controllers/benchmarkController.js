@@ -4,23 +4,47 @@ function getBenchmarkData(req, res) {
     var mes = req.query.mes;
     var idEmpresa = req.query.idEmpresa;
 
-    // Se mes existir, busca apenas esse mês; se não, busca todos os meses
-    var melhoresPromise = benchmarkModel.getMelhoresNotas(idEmpresa, mes).catch(() => null);
+    var melhoresPromise = benchmarkModel
+        .getMelhoresNotas(idEmpresa, mes)
+        .catch((erro) => {
+            console.log("❌ Erro ao buscar MELHORES NOTAS:", erro);
+            return null;
+        });
 
-    var pioresPromise = benchmarkModel.getPioresNotas(idEmpresa, mes).catch(() => null);
+    var pioresPromise = benchmarkModel
+        .getPioresNotas(idEmpresa, mes)
+        .catch((erro) => {
+            console.log("❌ Erro ao buscar PIORES NOTAS:", erro);
+            return null;
+        });
 
-    var mediaPromise = benchmarkModel.getMediaGeral(idEmpresa, mes).catch(() => null);
+    var gruposProblemas = benchmarkModel
+        .getMaiorEMenorGrupoProblema(idEmpresa, mes)
+        .catch((erro) => {
+            console.log("❌ Erro ao buscar GRUPO PROBLEMA MAIOR E MENOR:", erro);
+            return null;
+        })
 
-    Promise.all([melhoresPromise, pioresPromise, mediaPromise])
-        .then(([melhoresRes, pioresRes, mediaRes]) => {
+    var tmrPromise = benchmarkModel
+        .getTmrEmpresaMercado(idEmpresa, mes)
+        .catch((erro) => {
+            console.log("❌ Erro ao buscar TMR (Tempo Médio de Resposta):", erro);
+            return null;
+        });
+
+
+    // Executa tudo
+    Promise.all([melhoresPromise, pioresPromise, gruposProblemas, tmrPromise])
+        .then(([melhoresRes, pioresRes, gruposProblemasRes, tmrRes]) => {
             res.json({
                 melhores: melhoresRes,
                 piores: pioresRes,
-                mediaGeral: mediaRes
+                tmr: tmrRes,
+                gruposProblemas: gruposProblemasRes
             });
         })
         .catch((erro) => {
-            console.log("Erro no benchmark:", erro);
+            console.log("❌ Erro geral no benchmark:", erro);
             res.status(500).json("Erro ao processar dados do benchmark");
         });
 }

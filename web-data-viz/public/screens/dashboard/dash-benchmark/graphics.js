@@ -10,7 +10,7 @@ function gerarCicloUltimos12Meses() {
     select.innerHTML = "";
 
     const hoje = new Date();
-    const anoAnterior = hoje.getFullYear() - 1;
+    const anoAnterior = hoje.getFullYear();
 
     const nomesMeses = [
         "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -60,7 +60,7 @@ function montarGraficos(dados) {
     if (chartMelhores) chartMelhores.destroy();
     if (chartPiores) chartPiores.destroy();
 
-    // ----- PIORES DESEMPENHOS -----
+    // ----- MELHORES DESEMPENHOS -----
     const melhoresLabels = dados.melhores.map(item => item.grupo_problema);
     const melhoresEmpresa = dados.melhores.map(item => item.media_empresa);
     const melhoresMercado = dados.melhores.map(item => item.media_mercado);
@@ -95,6 +95,8 @@ function montarGraficos(dados) {
     const pioresEmpresa = dados.piores.map(item => item.media_empresa);
     const pioresMercado = dados.piores.map(item => item.media_mercado);
 
+    console.log(pioresLabels, pioresEmpresa, pioresMercado)
+
     const pioresData = {
         labels: pioresLabels,
         datasets: [
@@ -111,12 +113,14 @@ function montarGraficos(dados) {
         ]
     };
 
+    console.log(pioresData)
+
     chartPiores = new Chart(document.getElementById('pioresDesempenhos'), {
         type: 'bar',
         data: pioresData,
         options: {
             responsive: true,
-            scales: { y: { min: 3, max: 5 } }
+            scales: { y: { min: 0, max: 5 } }
         }
     });
 }
