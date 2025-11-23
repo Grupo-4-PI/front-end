@@ -58,6 +58,7 @@ function carregarDesempenhoInterno() {
             atualizarNotaMedia(dados.notaMedia);
             atualizarGraficoEvolucao(dados.evolucao);
             atualizarMapa(dados.mapaMercado);
+            atualizarRankingEstados(dados.mapaMercado)
         })
 
         .catch((erro) => {
@@ -307,4 +308,49 @@ function graficoEvolucao(dadosEmpresa, dadosMercado) {
         }
     });
 }
+
+// 11. RANKING DELTA MAPA
+function atualizarRankingEstados(dadosMapaBruto) {
+    const container = document.getElementById("rank-estados");
+    console.log(container)
+
+    container.innerHTML = "";
+
+    const lista = dadosMapaBruto.map(item => ({
+        uf: item.uf,
+        delta: item.delta
+    }));
+
+    lista.sort((a, b) => b.delta - a.delta);
+
+    const top3 = lista.slice(0, 3);
+
+    const nomesEstados = {
+        AC: "Acre", AL: "Alagoas", AP: "Amapá", AM: "Amazonas", BA: "Bahia",
+        CE: "Ceará", DF: "Distrito Federal", ES: "Espírito Santo", GO: "Goiás",
+        MA: "Maranhão", MT: "Mato Grosso", MS: "Mato Grosso do Sul",
+        MG: "Minas Gerais", PA: "Pará", PB: "Paraíba", PR: "Paraná",
+        PE: "Pernambuco", PI: "Piauí", RJ: "Rio de Janeiro",
+        RN: "Rio Grande do Norte", RS: "Rio Grande do Sul",
+        RO: "Rondônia", RR: "Roraima", SC: "Santa Catarina", SP: "São Paulo",
+        SE: "Sergipe", TO: "Tocantins"
+    };
+
+    top3.forEach((item, index) => {
+        const div = document.createElement("div");
+        div.classList.add("rank-region");
+
+        div.innerHTML = `
+            <div class="bagde">${index + 1}°</div>
+            <p class="region">${nomesEstados[item.uf] || item.uf}</p>
+            <p class="score">
+                <i class='bx bx-star'></i>
+                <span>${item.delta}</span>
+            </p>
+        `;
+
+        container.appendChild(div);
+    });
+}
+
 
