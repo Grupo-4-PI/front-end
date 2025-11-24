@@ -76,7 +76,7 @@
 
     <footer class="footer-sidebar">
       <div class="footer-actions">
-        <a href="../../login/login.html">
+        <a href="../login/login.html">
           <button class="menu-btn">
             <i class="bx bx-log-out"></i>
             <p class="label">Sair</p>
@@ -98,37 +98,60 @@
       </div>
     </header>
 
-    <section class="user-table">
-      <table>
-        <thead>
-          <tr>
-            <th style="width: 27%;">Nome Completo</th>
-            <th>Cargo</th>
-            <th>Perfil</th>
-            <th style="width: 200px;">Status</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <thead class="filters">
-          <td><input type="text" placeholder="Nome:"></td>
-          <td><input type="text" placeholder="Cargo:"></td>
-          <td><input type="text" placeholder="Perfil:"></td>
-          <td>
-            <select name="" id="options-status">
-              <option value="Todos">Todos</option>
-              <option value="Ativo">Ativo</option>
-              <option value="Inativo">Inativo</option>
-            </select>
-          </td>
-        </thead>
-        <tbody id="userList">
-          <tr>
-          </tr>
-        </tbody>
-      </table>
-    </section>
+    <div class="tabs-container">
+      <button class="tab-button active" onclick="trocarTab('usuarios')">Usuários</button>
+      <button class="tab-button" onclick="trocarTab('perfis')">Perfis</button>
+    </div>
 
-    <!-- MODAIS -->
+
+    <div id="tabUsuarios" class="tab-content active">
+      <section class="user-table">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 27%;">Nome Completo</th>
+              <th>Cargo</th>
+              <th>Perfil</th>
+              <th style="width: 200px;">Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <thead class="filters">
+            <td><input type="text" placeholder="Nome:"></td>
+            <td><input type="text" placeholder="Cargo:"></td>
+            <td><input type="text" placeholder="Perfil:"></td>
+            <td> <select name="" id="options-status">
+                <option value="Todos">Todos</option>
+                <option value="Ativo">Ativo</option>
+                <option value="Inativo">Inativo</option>
+              </select> </td>
+          </thead>
+          <tbody id="userList">
+            <tr> </tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+
+    <div id="tabPerfis" class="tab-content">
+      <section class="user-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Nome do Perfil</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="perfilList">
+            <!-- Preenchido via JS -->
+          </tbody>
+        </table>
+      </section>
+    </div>
+
+
+    <!-- MODAIS USUÁRIO -->
     <!-- MODAL: Adicionar Profissional -->
     <div id="modalAddProfissional" class="modal hidden">
       <div class="container">
@@ -245,10 +268,128 @@
         </div>
       </div>
     </div>
+
+
+    <!-- MODAIS PERFIS -->
+    <!-- MODAL ADICIONAR PERFIL -->
+    <div id="modalAddPerfil" class="modal hidden">
+      <div class="modal-content">
+        <h2>Novo Perfil de Acesso</h2>
+
+        <form id="formAddPerfil">
+          <label>Nome do Perfil</label>
+          <input type="text" id="perfil_nome_add" required placeholder="Ex: Suporte, Atendimento, Supervisor">
+
+          <!-- CHECKBOXES PARA TELAS -->
+          <label>Telas Disponíveis</label>
+          <div id="telas_add" class="checkbox-container"></div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-cancel" onclick="fecharModal('modalAddPerfil')">Cancelar</button>
+            <button type="submit" class="btn-primary">Cadastrar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL EDITAR PERFIL -->
+    <div id="modalEditPerfil" class="modal hidden">
+      <div class="modal-content">
+        <h2>Editar Perfil</h2>
+
+        <form id="formEditPerfil">
+          <input type="hidden" id="perfil_id_edit">
+
+          <label>Nome do Perfil</label>
+          <input type="text" id="perfil_nome_edit" required>
+
+          <!-- CHECKBOXES PARA TELAS -->
+          <label>Telas Vinculadas</label>
+          <div id="telas_edit" class="checkbox-container"></div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-cancel" onclick="fecharModal('modalEditPerfil')">Cancelar</button>
+            <button type="submit" class="btn-primary">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL DELETAR PERFIL -->
+    <div id="modalDeletePerfil" class="modal hidden">
+      <div class="modal-content delete">
+        <h2>Excluir Perfil</h2>
+
+        <p>
+          Tem certeza que deseja excluir este perfil?
+          Os usuários que utilizam este perfil deixarão de acessar as telas atribuídas a ele.
+        </p>
+
+        <div class="modal-actions">
+          <button class="btn-cancel" onclick="fecharModal('modalDeletePerfil')">Cancelar</button>
+          <button id="confirmDeletePerfilBtn" class="btn-danger">Excluir</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="modalViewPerfil" class="modal hidden">
+      <div class="modal-content">
+        <h2>Detalhes do Perfil</h2>
+
+        <form>
+          <label>Nome do Perfil</label>
+          <input type="text" id="perfil_nome_view" readonly>
+
+          <label>Telas vinculadas</label>
+          <div id="telas_view" class="checkbox-container readonly"></div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-primary" onclick="fecharModal('modalViewPerfil')">Fechar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
   </main>
 
-  <script src="./modal.js"></script>
+  <script src="./modalUsuario.js"></script>
+  <script src="./modalPerfis.js"></script>
   <script src="../../script/assets-aplicacao/sidebar.js"></script>
+  <script>
+    function trocarTab(tab) {
+      const btn = document.querySelector(".header-actions button");
+
+      // Remove "active" dos botões
+      document.querySelectorAll('.tab-button')
+        .forEach(btn => btn.classList.remove('active'));
+
+      // Ativa o botão correto
+      if (tab === 'usuarios') {
+        document.querySelector('.tab-button:nth-child(1)').classList.add('active');
+
+        // Troca texto e ação do botão
+        btn.textContent = "+ Adicionar Funcionário";
+        btn.setAttribute("onclick", "abrirModal('modalAddProfissional')");
+
+      } else {
+        document.querySelector('.tab-button:nth-child(2)').classList.add('active');
+
+        // Troca texto e ação do botão
+        btn.textContent = "+ Adicionar Perfil";
+        btn.setAttribute("onclick", "abrirModal('modalAddPerfil')");
+      }
+
+      // Mostra o conteúdo correto
+      document.querySelectorAll('.tab-content')
+        .forEach(tab => tab.classList.remove('active'));
+
+      document.getElementById('tabUsuarios').classList.toggle('active', tab === 'usuarios');
+      document.getElementById('tabPerfis').classList.toggle('active', tab === 'perfis');
+    }
+
+  </script>
+
 </body>
 
 </html>
