@@ -22,7 +22,7 @@ function gerarCicloUltimos12Meses() {
     select.innerHTML = "";
 
     const hoje = new Date();
-    const anoAnterior = hoje.getFullYear();
+    const anoAnterior = hoje.getFullYear() - 1;
 
     const nomesMeses = [
         "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
