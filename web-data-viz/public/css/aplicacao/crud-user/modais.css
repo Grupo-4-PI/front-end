@@ -137,9 +137,7 @@ button {
 }
 
 
-/* ============================================================
-   CHECKBOX CONTAINER
-============================================================ */
+/* CHECKBOX CONTAINER */
 .checkbox-container,
 .checkbox-group {
   grid-column: span 2;
@@ -191,9 +189,7 @@ button {
 }
 
 
-/* ============================================================
-   SCROLL PERSONALIZADO
-============================================================ */
+/* SCROLL PERSONALIZADO */
 .checkbox-container::-webkit-scrollbar {
   width: 6px;
 }
@@ -209,14 +205,13 @@ button {
 }
 
 
-/* ============================================================
-   ANIMAÇÃO
-============================================================ */
+/* ANIMAÇÃO */
 @keyframes slideIn {
   from {
     opacity: 0;
     transform: translateY(-15px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -224,9 +219,7 @@ button {
 }
 
 
-/* ============================================================
-   RESPONSIVIDADE
-============================================================ */
+/* RESPONSIVIDADE */
 @media (max-width: 480px) {
 
   .modal .container,
