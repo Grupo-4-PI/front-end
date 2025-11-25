@@ -3,6 +3,16 @@ const data_user = JSON.parse(
 );
 
 const idEmpresaServer = data_user.idEmpresa;
+const nomeUsuarioServer = data_user.nome;
+const cargoUsuarioServer = data_user.cargo;
+
+document.addEventListener("DOMContentLoaded", () => {
+    nomeUsuario = document.getElementById("nome_usuario");
+    cargoUsuario = document.getElementById("cargo_usuario");
+
+    nomeUsuario.innerHTML = nomeUsuarioServer;
+    cargoUsuario.innerHTML = cargoUsuarioServer;
+})
 
 // 1. GERAR ÚLTIMOS 12 MESES
 function gerarCicloUltimos12Meses() {

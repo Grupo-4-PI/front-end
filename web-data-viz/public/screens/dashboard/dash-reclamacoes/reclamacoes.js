@@ -7,10 +7,20 @@ const nomeEmpresaBruto = JSON.parse(
 );
 
 const nomeEmpresaServer = nomeEmpresaBruto.nomeEmpresa;
+const nomeUsuarioServer = nomeEmpresaBruto.nome;
+const cargoUsuarioServer = nomeEmpresaBruto.cargo;
 
 document.addEventListener("DOMContentLoaded", carregarDadosReclamacoes)
 
 function carregarDadosReclamacoes() {
+
+    const nomeUsuario = document.getElementById("nome_usuario");
+    const cargoUsuario = document.getElementById("cargo_usuario");
+
+    nomeUsuario.innerHTML = nomeUsuarioServer;
+    cargoUsuario.innerHTML = cargoUsuarioServer;
+
+
     atualizarProblemaPrincipal(nomeEmpresaServer);
     atualizarTopProblemas(nomeEmpresaServer);
     atualizarComparativo(nomeEmpresaServer);

@@ -4,9 +4,18 @@ const data_user = JSON.parse(
 );
 
 const nomeEmpresa = data_user.nomeEmpresa;
+const nomeUsuarioSS = data_user.nome;
+const cargoUsuarioSS = data_user.cargo;
 
 
 document.addEventListener("DOMContentLoaded", () => {
+
+    const nomeUsuario = document.getElementById("nome_usuario");
+    const cargoUsuario = document.getElementById("cargo_usuario");
+
+    nomeUsuario.innerHTML = nomeUsuarioSS;
+    cargoUsuario.innerHTML = cargoUsuarioSS;
+
     gerarCicloUltimos12Meses();
 
     const select = document.getElementById("period");

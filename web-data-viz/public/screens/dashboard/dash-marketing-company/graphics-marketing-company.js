@@ -37,6 +37,14 @@ function gerarCicloUltimos12Meses() {
 function carregarDesempenhoInterno() {
     const userData = JSON.parse(sessionStorage.getItem("data_user"));
     const idEmpresaServer = userData.idEmpresa;
+    const nomeUsuarioServer = userData.nome;
+    const cargoUsuarioServer = userData.cargo;
+
+    const nomeUsuario = document.getElementById("nome_usuario");
+    const cargoUsuario = document.getElementById("cargo_usuario");
+
+    nomeUsuario.innerHTML = nomeUsuarioServer;
+    cargoUsuario.innerHTML = cargoUsuarioServer;
 
     const periodoSelecionado = document.getElementById("period").value;
 
