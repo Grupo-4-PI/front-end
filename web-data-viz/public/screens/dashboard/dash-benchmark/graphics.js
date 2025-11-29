@@ -49,9 +49,9 @@ function buscarBenchmark(mes) {
         .then(res => res.json())
         .then(dados => {
             console.log("Benchmark:", dados);
-            montarGraficos(dados);
             atualizarTMR(dados)
             atualizarKpiGrupoProblema(dados);
+            montarGraficos(dados);
         })
         .catch(err => {
             console.error("Erro ao buscar benchmark:", err);
@@ -60,6 +60,8 @@ function buscarBenchmark(mes) {
 
 // 3. ATUALIZA AO TROCAR A DATA
 document.getElementById("period").addEventListener("change", function () {
+    console.log("Ola")
+    console.log(this.value)
     buscarBenchmark(this.value);
 });
 
@@ -125,7 +127,6 @@ function montarGraficos(dados) {
         ]
     };
 
-    console.log(pioresData)
 
     chartPiores = new Chart(document.getElementById('pioresDesempenhos'), {
         type: 'bar',
@@ -140,6 +141,7 @@ function montarGraficos(dados) {
 
 // 5. ------ ATUALIZAR KPI DE TMR -------
 function atualizarTMR(dados) {
+    console.log(dados)
     if (!dados.tmr || dados.tmr.length === 0) return;
 
     const tmrEmpresa = Number(dados.tmr[0].tmr_empresa);

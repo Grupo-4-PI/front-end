@@ -350,7 +350,7 @@ function atualizarRankingEstados(dadosMapaBruto) {
 
         div.innerHTML = `
             <div class="bagde">${index + 1}°</div>
-            <p class="region">${nomesEstados[item.uf] || item.uf}</p>
+            <p class="region">${nomesEstados[item.uf.toUpperCase()] || item.uf}</p>
             <p class="score">
                 <i class='bx bx-star'></i>
                 <span>${item.delta}</span>

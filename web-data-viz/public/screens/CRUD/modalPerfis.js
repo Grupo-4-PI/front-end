@@ -67,18 +67,18 @@ function renderizarTabelaPerfis(lista) {
         if (perfil.idEmpresa) {
             // PERFIL DA EMPRESA → editar + deletar
             botoesAcoes = `
-                <button class="btn-edit" onclick="abrirModalEditPerfil(${perfil.idTipoAcesso})">
+                <button class="action-btn edit" onclick="abrirModalEditPerfil(${perfil.idTipoAcesso})">
                     <i class="bx bx-edit"></i>
                 </button>
 
-                <button class="btn-delete" onclick="abrirModalDeletePerfil(${perfil.idTipoAcesso})">
-                    <i class="bx bx-trash"></i>
+                <button class="action-btn" onclick="abrirModalViewPerfil(${perfil.idTipoAcesso})">
+                    <i class="bx bx-show"></i>
                 </button>
             `;
         } else {
             // PERFIL GLOBAL → somente visualizar
             botoesAcoes = `
-                <button class="btn-view" onclick="abrirModalViewPerfil(${perfil.idTipoAcesso})">
+                <button class="action-btn" onclick="abrirModalViewPerfil(${perfil.idTipoAcesso})">
                     <i class="bx bx-show"></i>
                 </button>
             `;
@@ -88,7 +88,7 @@ function renderizarTabelaPerfis(lista) {
             <tr>
                 <td>${perfil.nome}</td>
                 <td>${perfil.ativo ? "Ativo" : "Inativo"}</td>
-                <td>${botoesAcoes}</td>
+                <td class="methods-crud">${botoesAcoes}</td>
             </tr>
         `;
     });

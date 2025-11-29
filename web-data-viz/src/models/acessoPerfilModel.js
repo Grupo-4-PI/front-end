@@ -68,7 +68,7 @@ function inativarTipoAcesso(idTipoAcesso) {
 function buscarTelasPorPerfil(idTipoAcesso) {
   var sql = `
         SELECT t.idTela, t.nome
-        FROM TipoAcessoTela tat
+        FROM tipoAcessoTela tat
         JOIN Tela t ON t.idTela = tat.idTela
         WHERE tat.idTipoAcesso = ${idTipoAcesso};
     `;
@@ -80,7 +80,7 @@ function buscarTelasPorPerfil(idTipoAcesso) {
 function atualizarTipoAcessoTela(idTipoAcesso, listaTelas) {
   // 1) Remover todas as telas
   const deleteSql = `
-        DELETE FROM TipoAcessoTela
+        DELETE FROM tipoAcessoTela
         WHERE idTipoAcesso = ${idTipoAcesso};
     `;
 
@@ -98,7 +98,7 @@ function atualizarTipoAcessoTela(idTipoAcesso, listaTelas) {
       .join(", ");
 
     const insertSql = `
-            INSERT INTO TipoAcessoTela (idTipoAcesso, idTela)
+            INSERT INTO tipoAcessoTela (idTipoAcesso, idTela)
             VALUES ${values};
         `;
 

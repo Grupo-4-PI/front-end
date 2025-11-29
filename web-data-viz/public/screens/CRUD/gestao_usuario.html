@@ -127,7 +127,6 @@
               </select> </td>
           </thead>
           <tbody id="userList">
-            <tr> </tr>
           </tbody>
         </table>
       </section>
@@ -298,13 +297,14 @@
         <h2>Editar Perfil</h2>
 
         <form id="formEditPerfil">
-          <input type="hidden" id="perfil_id_edit">
 
-          <label>Nome do Perfil</label>
+          <label for="perfil_nome_edit">Nome do Perfil</label>
           <input type="text" id="perfil_nome_edit" required>
 
+          <input type="hidden" id="perfil_id_edit">
+
           <!-- CHECKBOXES PARA TELAS -->
-          <label>Telas Vinculadas</label>
+          <p style="margin-top: 20px;">Telas Vinculadas</p>
           <div id="telas_edit" class="checkbox-container"></div>
 
           <div class="modal-actions">
