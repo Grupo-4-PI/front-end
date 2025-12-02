@@ -1,0 +1,274 @@
+body {
+    background: none;
+    background-color: rgb(235, 245, 255);
+}
+
+.btn-novo {
+    padding: 12px 22px;
+    background: linear-gradient(135deg, #0d6efd, #3f9aff);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: .25s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
+
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, .18);
+    }
+}
+
+.ticket-board {
+    padding: 20px 0px;
+
+    .ticket-item {
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 22px;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.07);
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+        transition: .2s ease;
+
+        &:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.1);
+        }
+
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .ticket-code {
+                font-size: 14px;
+                font-weight: bold;
+                color: #2d6cdf;
+                margin: 0;
+            }
+
+            .ticket-title {
+                margin: 5px 0 0 0;
+                font-size: 20px;
+            }
+
+            .status {
+                padding: 6px 16px;
+                border-radius: 20px;
+                font-size: 13px;
+                font-weight: bold;
+
+                &.open {
+                    background: #d1f3df;
+                    color: #197242;
+                }
+
+                &.progress {
+                    background: #fff3cd;
+                    color: #9c7b00;
+                }
+
+                &.closed {
+                    background: #f8d7da;
+                    color: #8b2c3d;
+                }
+            }
+        }
+
+        .ticket-info-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+
+            .info-block {
+                background: #f8fafc;
+                padding: 12px 14px;
+                border-radius: 10px;
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+
+                label {
+                    font-size: 12px;
+                    font-weight: bold;
+                    color: #6c7a89;
+                    text-transform: uppercase;
+                }
+
+                p {
+                    margin: 0;
+                    font-size: 15px;
+                }
+            }
+        }
+
+        .ticket-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .resposta {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+
+                label {
+                    font-size: 12px;
+                    color: #6c7a89;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                }
+            }
+
+            .actions {
+                display: flex;
+                gap: 10px;
+
+                button {
+                    padding: 8px 16px;
+                    border: none;
+                    border-radius: 8px;
+                    font-weight: bold;
+                    cursor: pointer;
+                    transition: .15s;
+
+                    &.edit {
+                        background: #1976ff;
+                        color: white;
+
+                        &:hover {
+                            background: #165fd1;
+                        }
+                    }
+
+                    &.delete {
+                        background: #e63946;
+                        color: white;
+
+                        &:hover {
+                            background: #c72432;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* MODAL DO CRUD */
+.modal-suporte {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: .3s ease;
+
+    &.active {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .modal-content {
+        width: 460px;
+        background: white;
+        padding: 30px;
+        border-radius: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        box-shadow: 0 6px 26px rgba(0, 0, 0, .2);
+        animation: fadeUp .3s ease;
+
+        h3 {
+            font-size: 22px;
+            color: #1d1d1d;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #424242;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d0d0d0;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            transition: .2s;
+
+            &:focus {
+                border-color: #0d6efd;
+                box-shadow: 0 0 0 2px rgba(13, 110, 253, .2);
+            }
+        }
+
+        textarea {
+            height: 110px;
+            resize: none;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+
+            button {
+                padding: 10px 18px;
+                border: none;
+                border-radius: 10px;
+                font-size: 14px;
+                cursor: pointer;
+                transition: .25s;
+
+                &.cancelar {
+                    background: #e4e4e4;
+
+                    &:hover {
+                        background: #cecece;
+                    }
+                }
+
+                &.salvar {
+                    background: #0d6efd;
+                    color: white;
+
+                    &:hover {
+                        background: #0b5ed7;
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* ANIMAÇÃO DO MODAL */
+@keyframes fadeUp {
+    from {
+        transform: translateY(25px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

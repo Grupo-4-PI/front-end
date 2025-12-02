@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suporte</title>
+    <link rel="stylesheet" href="../../css/aplicacao/assets/main-dash.css">
+    <link rel="stylesheet" href="../../css/aplicacao/suport/suport.css">
+</head>
+
+<body>
+    <aside class="sidebar" aria-label="Barra lateral de navegação">
+        <header class="sidebar-top">
+            <div class="container-header-company">
+                <button class="toggle-btn" aria-label="Alternar menu" title="Alternar menu">
+                    <i class='bx  bx-menu'></i>
+                </button>
+
+                <div class="container-logotipo">
+                    <img src="../../../assets/logotipo/logotipo-airwise-pad-white.png" alt="">
+                </div>
+            </div>
+
+            <div class="brand">
+                <div class="brand-avatar">
+                    <img src="https://images.vexels.com/media/users/3/137047/isolated/preview/5831a17a290077c646a48c4db78a81bb-icone-azul-do-perfil-de-usuario.png"
+                        alt="">
+                </div>
+                <div class="brand-text">
+                    <h3 id="nome_usuario"></h3>
+                    <p id="cargo_usuario"></p>
+                </div>
+            </div>
+        </header>
+
+        <nav class="menu" role="navigation" aria-label="Menu principal">
+            <a href="../dashboard/dash-geral/dash-main.html">
+                <button class="menu-btn" aria-pressed="true">
+                    <i class="bx bx-home"></i>
+                    <p class="label">Home</p>
+                </button>
+            </a>
+
+            <a href="../dashboard/dash-reclamacoes/dash-reclamacoes.html">
+                <button class="menu-btn" aria-pressed="false">
+                    <i class="bx bx-error"></i>
+                    <p class="label">Reclamações</p>
+                </button>
+            </a>
+
+            <a href="../dashboard/dash-marketing-company/dash-marketing-company.html">
+                <button class="menu-btn">
+                    <i class="bx bx-line-chart"></i>
+                    <p class="label">Desempenho Interno</p>
+                </button>
+            </a>
+
+            <a href="../dashboard/dash-benchmark/dash-benchmark.html">
+                <button class="menu-btn active">
+                    <i class="bx bx-line-chart"></i>
+                    <p class="label">Benchmark</p>
+                </button>
+            </a>
+
+            <a href="../CRUD/gestao_usuario.html">
+                <button class="menu-btn">
+                    <i class='bx  bx-user' style='color:#ffffff'></i>
+                    <p class="label">Gestão de Usuários</p>
+                </button>
+            </a>
+
+            <a href="../../suporte/suporte.html">
+                <button class="menu-btn">
+                    <i class='bx  bx-help-circle' style='color:#ffffff'></i>
+                    <p class="label">Suporte</p>
+                </button>
+            </a>
+        </nav>
+
+        <footer class="footer-sidebar">
+            <div class="footer-actions">
+                <a href="../../login/login.html">
+                    <button class="menu-btn">
+                        <i class="bx bx-log-out"></i>
+                        <p class="label">Sair</p>
+                    </button>
+                </a>
+            </div>
+        </footer>
+    </aside>
+
+    <main role="main" aria-label="Conteúdo principal">
+        <header class="header" role="banner" aria-label="Barra superior do painel">
+            <div class="header-left">
+                <h1 class="page-title">Meus Tickets</h1>
+                <p class="subtitle">Abra chamados e abra chamados</p>
+            </div>
+
+            <button class="btn-novo">+ Novo Chamado</button>
+        </header>
+
+        <div class="ticket-board">
+            <div class="ticket-item">
+
+                <div class="ticket-header">
+                    <div>
+                        <p class="ticket-code">#CHM-0183</p>
+                        <h2 class="ticket-title">Erro ao acessar dashboard</h2>
+                    </div>
+                    <span class="status open">Aberto</span>
+                </div>
+
+                <div class="ticket-info-grid">
+                    <div class="info-block">
+                        <label>Categoria</label>
+                        <p>Login</p>
+                    </div>
+
+                    <div class="info-block">
+                        <label>Prioridade</label>
+                        <p>Alta</p>
+                    </div>
+
+                    <div class="info-block">
+                        <label>Criado em</label>
+                        <p>12/11/2025</p>
+                    </div>
+
+                    <div class="info-block">
+                        <label>Atualizado em</label>
+                        <p>14/11/2025</p>
+                    </div>
+                </div>
+
+                <div class="ticket-footer">
+                    <div class="resposta">
+                        <label>Última resposta</label>
+                        <p>Ainda não respondido</p>
+                    </div>
+
+                    <div class="actions">
+                        <button class="edit">Editar</button>
+                        <button class="delete">Excluir</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+</body>
+
+
+<!-- bibliotecas -->
+<script src="../../../script/assets-aplicacao/sidebar.js"></script>
+
+</html>
