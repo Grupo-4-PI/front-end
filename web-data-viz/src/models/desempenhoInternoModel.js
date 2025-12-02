@@ -27,20 +27,29 @@ function getPanoramaKPI(mes) {
 function getNotaMedia(idEmpresa, mes) {
   var instrucaoSql = `
     SELECT 
+        -- 1. Média da Empresa
         TRUNCATE(AVG(CASE WHEN fkEmpresa = ${idEmpresa} THEN nota_consumidor END), 2) AS media_empresa,
+        
+        -- 2. Média do Mercado (Concorrentes)
         TRUNCATE(AVG(CASE WHEN fkEmpresa <> ${idEmpresa} THEN nota_consumidor END), 2) AS media_mercado,
 
+        -- 3. Variação Percentual: ((Empresa - Mercado) / Mercado) * 100
+        TRUNCATE(
+            (
+                (AVG(CASE WHEN fkEmpresa = ${idEmpresa} THEN nota_consumidor END) - 
+                 AVG(CASE WHEN fkEmpresa <> ${idEmpresa} THEN nota_consumidor END)) 
+                / 
+                 AVG(CASE WHEN fkEmpresa <> ${idEmpresa} THEN nota_consumidor END)
+            ) * 100
+        , 2) AS variacao,
+
+        -- 4. Delta Absoluto: (Empresa - Mercado)
+        -- Removi o ABS para permitir valores negativos (ex: -0.2) se a empresa estiver abaixo
         TRUNCATE(
             AVG(CASE WHEN fkEmpresa = ${idEmpresa} THEN nota_consumidor END) -
             AVG(CASE WHEN fkEmpresa <> ${idEmpresa} THEN nota_consumidor END)
-        , 2) AS variacao,
-
-        TRUNCATE(
-            ABS(
-                AVG(CASE WHEN fkEmpresa = ${idEmpresa} THEN nota_consumidor END) -
-                AVG(CASE WHEN fkEmpresa <> ${idEmpresa} THEN nota_consumidor END)
-            )
         , 2) AS delta
+
     FROM reclamacoes
     WHERE DATE_FORMAT(data_abertura, '%Y-%m') = '${mes}';
   `;
