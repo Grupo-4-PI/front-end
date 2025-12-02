@@ -7,16 +7,16 @@ const idEmpresa = dataUser.fkEmpresa || dataUser.idEmpresa;
 document.addEventListener("DOMContentLoaded", () => {
     carregarUsuarios();
     empresa_add.value = idEmpresa;
-    carregarPerfis();
+    carregarPerfisUser();
     iniciarFiltros();
 });
 
-// CARREGAR PERFIS
-function carregarPerfis() {
-    fetch(`/perfil/findAll`)
-        .then(res => res.json())
-        .then(perfis => {
-            listaPerfis = perfis.perfis;
+
+function carregarPerfisUser() {
+    fetch(`/tipoAcesso/findAll/${idEmpresa}`)
+        .then(r => r.json())
+        .then(json => {
+            listaPerfis = json;
 
             const selectAdd = document.getElementById("perfil_add");
             const selectEdit = document.getElementById("perfil_edit");
@@ -25,7 +25,7 @@ function carregarPerfis() {
             if (selectEdit)
                 selectEdit.innerHTML = `<option value="" disabled selected>Selecione o Perfil</option>`;
 
-            perfis.perfis.forEach(p => {
+            json.forEach(p => {
                 const optionHTML = `<option value="${p.idTipoAcesso}">${p.nome}</option>`;
                 selectAdd.innerHTML += optionHTML;
                 if (selectEdit) selectEdit.innerHTML += optionHTML;
@@ -33,6 +33,7 @@ function carregarPerfis() {
         })
         .catch(err => console.error("Erro ao carregar perfis:", err));
 }
+
 
 // CARREGAR USUÁRIOS
 function carregarUsuarios() {
@@ -169,6 +170,7 @@ document.getElementById("formAddProfissional").addEventListener("submit", functi
 // EDITAR FUNCIONÁRIO
 function abrirModalEditar(idUsuario) {
     usuarioSelecionado = idUsuario;
+    carregarPerfisUser();
 
     fetch(`/usuarios/findAll/${idEmpresa}`)
         .then(res => res.json())

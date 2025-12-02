@@ -1,127 +1,116 @@
 var reclamacoesModel = require("../models/reclamacoesModel");
 
-function getProblemaPrincipal(req, res) {
+// Função utilitária de validação
+function validarParametros(req, res) {
     const nomeEmpresa = req.query.nomeEmpresaServer;
+    const periodo = req.query.periodoServer;
 
     if (!nomeEmpresa) {
-        return res.status(400).send("Nome da Empresa desconhecido");
+        res.status(400).send("O nome da empresa é obrigatório.");
+        return null;
     }
 
-    reclamacoesModel.getDataKPIProblemaPrincipal(nomeEmpresa)
-        .then(
-            function(resultado) {
-                if(resultado.length > 0){
-                    res.status(200).json(resultado[0]);
-                } else {
-                    res.status(204).send("Nenhum resultado encontrado (KPIProblemaPrincipal)")
-                }
-            }
-        )
-        .catch(
-            function(erro) {
-                console.log(erro);
-                res.status(500).json(erro.sqlMessage);
-            }
-        )
+    if (!periodo) {
+        res.status(400).send("O período (YYYY-MM) é obrigatório.");
+        return null;
+    }
+
+    return { nomeEmpresa, periodo };
 }
 
-function getComparativo (req, res) {
-    const nomeEmpresa = req.query.nomeEmpresaServer;
+function getProblemaPrincipal(req, res) {
+    const params = validarParametros(req, res);
+    if (!params) return;
 
-    if (!nomeEmpresa) {
-        return res.status(400).send("Nome da Empresa desconhecido");
-    }
-
-    reclamacoesModel.getDataComparativoEficiencia(nomeEmpresa)
-        .then(
-            function (resultado) {
-                if (resultado.length > 0) {
-                    res.status(200).json(resultado[0]);
-                } else {
-                    res.status(204).send("Nenhum resultado encontrado (KPIComparativo")
-                }
+    reclamacoesModel
+        .getDataKPIProblemaPrincipal(params.nomeEmpresa, params.periodo)
+        .then(resultado => {
+            if (resultado.length > 0) {
+                res.status(200).json(resultado[0]);
+            } else {
+                res.status(204).send("Nenhum resultado encontrado (KPIProblemaPrincipal)");
             }
-        )
-        .catch(
-            function(erro) {
-                console.log(erro);
-                res.status(500).json(erro.sqlMessage)
-            }
-        )
+        })
+        .catch(erro => {
+            console.error("Erro ao buscar KPIProblemaPrincipal:", erro);
+            res.status(500).json(erro.sqlMessage);
+        });
+}
 
+function getComparativo(req, res) {
+    const params = validarParametros(req, res);
+    if (!params) return;
+
+    reclamacoesModel
+        .getDataComparativoEficiencia(params.nomeEmpresa, params.periodo)
+        .then(resultado => {
+            if (resultado.length > 0) {
+                res.status(200).json(resultado[0]);
+            } else {
+                res.status(204).send("Nenhum resultado encontrado (KPIComparativo)");
+            }
+        })
+        .catch(erro => {
+            console.error("Erro ao buscar KPIComparativo:", erro);
+            res.status(500).json(erro.sqlMessage);
+        });
 }
 
 function getTopProblemas(req, res) {
-    const nomeEmpresa = req.query.nomeEmpresaServer;
+    const params = validarParametros(req, res);
+    if (!params) return;
 
-    if (!nomeEmpresa) {
-        return res.status(400).send("Nome da Empresa desconhecido");
-    }
-
-    reclamacoesModel.getDataKPITopProblemas(nomeEmpresa)
-        .then(
-            function(resultado) {
-                if(resultado.length > 0){
-                    res.status(200).json(resultado);
-                } else {
-                    res.status(204).send("Nenhum resultado encontrado (KPITopProblemas")
-                }
+    reclamacoesModel
+        .getDataKPITopProblemas(params.nomeEmpresa, params.periodo)
+        .then(resultado => {
+            if (resultado.length > 0) {
+                res.status(200).json(resultado);
+            } else {
+                res.status(204).send("Nenhum resultado encontrado (KPITopProblemas)");
             }
-        )
-        .catch(
-            function(erro) {
-                console.log(erro);
-                res.status(500).json(erro.sqlMessage)
         })
+        .catch(erro => {
+            console.error("Erro ao buscar KPITopProblemas:", erro);
+            res.status(500).json(erro.sqlMessage);
+        });
 }
 
-function getReclamacoesPorEstado (req, res) {
-    const nomeEmpresa = req.query.nomeEmpresaServer;
+function getReclamacoesPorEstado(req, res) {
+    const params = validarParametros(req, res);
+    if (!params) return;
 
-    if (!nomeEmpresa) {
-        return res.status(400).send("Nome da Empresa desconhecido");
-    }
-
-    reclamacoesModel.getDataReclamacoesPorEstado(nomeEmpresa)
-        .then(
-            function(resultado) {
-                if(resultado.length > 0){
-                    res.status(200).json(resultado);
-                } else {
-                    res.status(204).send("Nenhum resultado encontrado (Gráf ReclamacoesPorEstado")
-                }
+    reclamacoesModel
+        .getDataReclamacoesPorEstado(params.nomeEmpresa, params.periodo)
+        .then(resultado => {
+            if (resultado.length > 0) {
+                res.status(200).json(resultado);
+            } else {
+                res.status(204).send("Nenhum resultado encontrado (ReclamacoesPorEstado)");
             }
-        )
-        .catch(
-            function(erro) {
-                console.log(erro);
-                res.status(500).json(erro.sqlMessage)
         })
+        .catch(erro => {
+            console.error("Erro ao buscar ReclamacoesPorEstado:", erro);
+            res.status(500).json(erro.sqlMessage);
+        });
 }
 
-function getMatrizPrioridade (req, res) {
-    const nomeEmpresa = req.query.nomeEmpresaServer;
+function getMatrizPrioridade(req, res) {
+    const params = validarParametros(req, res);
+    if (!params) return;
 
-    if (!nomeEmpresa) {
-        return res.status(400).send("Nome da Empresa desconhecido");
-    }
-
-    reclamacoesModel.getDataMatrizPrioridade(nomeEmpresa)
-        .then(
-            function(resultado) {
-                if(resultado.length > 0){
-                    res.status(200).json(resultado);
-                } else {
-                    res.status(204).send("Nenhum resultado encontrado (Gráf MatrizPrioridade")
-                }
+    reclamacoesModel
+        .getDataMatrizPrioridade(params.nomeEmpresa, params.periodo)
+        .then(resultado => {
+            if (resultado.length > 0) {
+                res.status(200).json(resultado);
+            } else {
+                res.status(204).send("Nenhum resultado encontrado (MatrizPrioridade)");
             }
-        )
-        .catch(
-            function(erro) {
-                console.log(erro);
-                res.status(500).json(erro.sqlMessage)
         })
-
+        .catch(erro => {
+            console.error("Erro ao buscar MatrizPrioridade:", erro);
+            res.status(500).json(erro.sqlMessage);
+        });
 }
 
 module.exports = {
@@ -130,4 +119,4 @@ module.exports = {
     getTopProblemas,
     getReclamacoesPorEstado,
     getMatrizPrioridade
-}
+};

@@ -28,7 +28,9 @@ function buscarPerfilUsuario(req, res) {
 }
 
 function findAll(req, res) {
-    perfilModel.findAll()
+    var idEmpresa = req.params.idEmpresa;
+
+    perfilModel.findAll(idEmpresa)
         .then(function (resultPerfil) {
             if (resultPerfil.length > 0) {
                 res.json({

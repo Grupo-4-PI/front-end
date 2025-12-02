@@ -15,6 +15,8 @@ function buscarPerfilAcesso(idPerfil) {
 function findAll(idEmpresa) {
   let sql = "";
 
+  console.log(idEmpresa)
+
   if (idEmpresa) {
     sql = `
             (SELECT * FROM tipoAcesso 
@@ -69,7 +71,7 @@ function buscarTelasPorPerfil(idTipoAcesso) {
   var sql = `
         SELECT t.idTela, t.nome
         FROM tipoAcessoTela tat
-        JOIN Tela t ON t.idTela = tat.idTela
+        JOIN tela t ON t.idTela = tat.idTela
         WHERE tat.idTipoAcesso = ${idTipoAcesso};
     `;
   return database.executar(sql);
