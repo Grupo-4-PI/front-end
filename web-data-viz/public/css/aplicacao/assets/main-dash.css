@@ -30,8 +30,8 @@ body {
         linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.7)),
         url('../../../assets/dashboard/wallpaper-dash.jpg') no-repeat right center / cover; */
     background:
-        linear-gradient(rgba(255, 255, 255, 0.76), rgba(255, 255, 255, 0.8)),
-        url('https://i.pinimg.com/736x/66/40/8d/66408de662a606b5da08e1f365505a1c.jpg') no-repeat right center / cover;
+        linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.8)),
+        url('../../../assets/dashboard/wallpaper-dash-sky.jpg') no-repeat right center / cover;
     /* background-blend-mode: lighten; */
 }
 

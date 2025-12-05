@@ -20,12 +20,12 @@ function findAll(idEmpresa) {
   if (idEmpresa) {
     sql = `
             (SELECT * FROM tipoAcesso 
-             WHERE idEmpresa IS NULL AND ativo = 1)
+             WHERE fkEmpresa IS NULL AND ativo = 1)
 
             UNION ALL
 
             (SELECT * FROM tipoAcesso 
-             WHERE idEmpresa = ${idEmpresa} AND ativo = 1);
+             WHERE fkEmpresa = ${idEmpresa} AND ativo = 1);
         `;
   } else {
     sql = `SELECT * FROM tipoAcesso;`;
@@ -37,7 +37,7 @@ function findAll(idEmpresa) {
 // CADASTRAR PERFIL
 function cadastrarTipoAcesso(idEmpresa, nome) {
   var sql = `
-        INSERT INTO tipoAcesso (idEmpresa, nome)
+        INSERT INTO tipoAcesso (fkEmpresa, nome)
         VALUES (${idEmpresa}, '${nome}');
     `;
   return database.executar(sql);
