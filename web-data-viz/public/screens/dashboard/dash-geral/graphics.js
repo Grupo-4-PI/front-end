@@ -142,7 +142,7 @@ let graficoEstadosInstance = null;
 function atualizarGraficoEstados(dados) {
     if (!dados || dados.length === 0) return;
 
-    const uf = dados.map(x => x.uf);
+    const uf = dados.map(x => (x.uf ? x.uf.toUpperCase() : ""));
     const media = dados.map(x => x.media_nota);
     const total = dados.map(x => x.total);
 
