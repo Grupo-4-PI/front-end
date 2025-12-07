@@ -12,6 +12,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     nomeUsuario.innerHTML = nomeUsuarioServer;
     cargoUsuario.innerHTML = cargoUsuarioServer;
+
+    document.getElementById("loading-overlay").style.display = "flex";
+
+    setTimeout(() => {
+        document.getElementById("loading-overlay").style.display = "none";
+    }, 2000);
 })
 
 // 1. GERAR ÚLTIMOS 12 MESES
@@ -22,12 +28,16 @@ function gerarCicloUltimos12Meses() {
     const hoje = new Date();
     const anoAnterior = hoje.getFullYear() - 1;
 
+    const optionTodos = document.createElement("option");
+    optionTodos.value = `${anoAnterior}`;   // Apenas o ano
+    optionTodos.textContent = `Todos (${anoAnterior})`;
+    select.appendChild(optionTodos);
+
     const nomesMeses = [
         "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
         "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
     ];
 
-    // Gera os 12 meses do ano anterior
     for (let mes = 11; mes >= 0; mes--) {
         const texto = `${nomesMeses[mes]}/${anoAnterior}`;
         const value = `${anoAnterior}-${String(mes + 1).padStart(2, "0")}`;
@@ -60,8 +70,12 @@ function buscarBenchmark(mes) {
 
 // 3. ATUALIZA AO TROCAR A DATA
 document.getElementById("period").addEventListener("change", function () {
-    console.log("Ola")
-    console.log(this.value)
+    document.getElementById("loading-overlay").style.display = "flex";
+
+    setTimeout(() => {
+        document.getElementById("loading-overlay").style.display = "none";
+    }, 2000);
+
     buscarBenchmark(this.value);
 });
 
@@ -75,7 +89,7 @@ function montarGraficos(dados) {
     if (chartPiores) chartPiores.destroy();
 
     // ----- MELHORES DESEMPENHOS -----
-    const melhoresLabels = dados.melhores.map(item => item.grupo_problema);
+    const melhoresLabels = dados.melhores.map(item => item.grupo_problema.split(" ")[0]);
     const melhoresEmpresa = dados.melhores.map(item => item.media_empresa);
     const melhoresMercado = dados.melhores.map(item => item.media_mercado);
 
@@ -196,6 +210,8 @@ function atualizarKpiGrupoProblema(dados) {
 
     dados.gruposProblemas.forEach((grupo, index) => {
         kpis_grupo[index].textContent = grupo.grupo_problema;
+
+        console.log(grupo.media_empresa)
 
         let media = Number(grupo.media_empresa).toFixed(2);
         kpis_score[index].textContent = media + "/5"
