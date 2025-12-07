@@ -125,11 +125,20 @@ select:focus {
   background: #4a4a4a;
 }
 
-/* Laranja (cancelar perfis) */
+.modal-actions {
+  margin-top: 20px;
+}
+
 .btn-cancel {
-  padding: 10px;
-  background-color: #ffa726;
-  color: #fff;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s;
+  background: #2d2d2d;
+  color: #ffffff;
 }
 
 .btn-cancel:hover {
@@ -139,6 +148,13 @@ select:focus {
 /* Vermelho */
 .btn-vermelho,
 .btn-danger {
+  padding: 14px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s;
   background: linear-gradient(90deg, #e74c3c, #c0392b);
   color: white;
   box-shadow: 0 4px 12px rgba(231, 76, 60, 0.35);

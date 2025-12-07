@@ -61,37 +61,40 @@ function renderizarTabelaPerfis(lista) {
     tbody.innerHTML = "";
 
     lista.forEach(perfil => {
-
         let botoesAcoes = "";
 
-        if (perfil.idEmpresa) {
-            // PERFIL DA EMPRESA → editar + deletar
+        if (perfil.fkEmpresa) {
             botoesAcoes = `
-                <button class="action-btn edit" onclick="abrirModalEditPerfil(${perfil.idTipoAcesso})">
-                    <i class="bx bx-edit"></i>
-                </button>
+            <button class="action-btn edit" onclick="abrirModalEditPerfil(${perfil.idTipoAcesso})">
+                <i class="bx bx-edit"></i>
+            </button>
+            
+            <button class="action-btn delete" onclick="abrirModalDeletePerfil(${perfil.idTipoAcesso})">
+                <i class="bx bx-trash"></i>
+            </button>
 
-                <button class="action-btn" onclick="abrirModalViewPerfil(${perfil.idTipoAcesso})">
-                    <i class="bx bx-show"></i>
-                </button>
-            `;
+            
+            <button class="action-btn" onclick="abrirModalViewPerfil(${perfil.idTipoAcesso})">
+                <i class="bx bx-show"></i>
+            </button>
+        `;
         } else {
-            // PERFIL GLOBAL → somente visualizar
             botoesAcoes = `
-                <button class="action-btn" onclick="abrirModalViewPerfil(${perfil.idTipoAcesso})">
-                    <i class="bx bx-show"></i>
-                </button>
-            `;
+            <button class="action-btn" onclick="abrirModalViewPerfil(${perfil.idTipoAcesso})">
+                <i class="bx bx-show"></i>
+            </button>
+        `;
         }
 
         tbody.innerHTML += `
-            <tr>
-                <td>${perfil.nome}</td>
-                <td>${perfil.ativo ? "Ativo" : "Inativo"}</td>
-                <td class="methods-crud">${botoesAcoes}</td>
-            </tr>
-        `;
+        <tr>
+            <td>${perfil.nome}</td>
+            <td>${perfil.ativo ? "Ativo" : "Inativo"}</td>
+            <td class="methods-crud">${botoesAcoes}</td>
+        </tr>
+    `;
     });
+
 }
 
 
