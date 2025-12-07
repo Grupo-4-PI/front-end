@@ -1,7 +1,15 @@
-var database = require("../database/config")
+var database = require("../database/config");
 
-/* 1) KPI — Problema Principal */
+function gerarFiltroPeriodo(periodo) {
+    return periodo.length === 4
+        ? `DATE_FORMAT(data_abertura, '%Y') = '${periodo}'`
+        : `DATE_FORMAT(data_abertura, '%Y-%m') = '${periodo}'`;
+}
+
+/* 1. KPI — Problema Principal */
 function getDataKPIProblemaPrincipal(nomeEmpresa, periodo) {
+    const filtroData = gerarFiltroPeriodo(periodo);
+
     var instrucaoSql = `
         SELECT 
             grupo_problema AS problemaPrincipal, 
@@ -12,7 +20,7 @@ function getDataKPIProblemaPrincipal(nomeEmpresa, periodo) {
             ) AS percentualFinalizadas
         FROM reclamacoes
         WHERE nome_fantasia = '${nomeEmpresa}'
-          AND DATE_FORMAT(data_abertura, '%Y-%m') = '${periodo}'
+          AND ${filtroData}
         GROUP BY grupo_problema
         ORDER BY quantidadePrincipal DESC
         LIMIT 1;
@@ -22,35 +30,37 @@ function getDataKPIProblemaPrincipal(nomeEmpresa, periodo) {
     return database.executar(instrucaoSql);
 }
 
-/* 2) Comparativo Eficiência */
+/* 2. Comparativo Eficiência */
 function getDataComparativoEficiencia(nomeEmpresa, periodo) {
+    const filtroData = gerarFiltroPeriodo(periodo);
+
     var instrucaoSql = `
         SELECT 
             ROUND(AVG(CASE
                 WHEN nome_fantasia = '${nomeEmpresa}' 
                      AND situacao LIKE 'finalizada%' 
-                     AND DATE_FORMAT(data_abertura, '%Y-%m') = '${periodo}'
+                     AND ${filtroData}
                 THEN nota_consumidor
             END), 2) AS notaMediaEmpresa,
 
             ROUND(AVG(CASE
                 WHEN nome_fantasia != '${nomeEmpresa}' 
                      AND situacao LIKE 'finalizada%'
-                     AND DATE_FORMAT(data_abertura, '%Y-%m') = '${periodo}'
+                     AND ${filtroData}
                 THEN nota_consumidor
             END), 2) AS notaMediaConcorrentes,
 
             ROUND(AVG(CASE
                 WHEN nome_fantasia = '${nomeEmpresa}' 
                      AND situacao LIKE 'finalizada%'
-                     AND DATE_FORMAT(data_abertura, '%Y-%m') = '${periodo}'
+                     AND ${filtroData}
                 THEN tempo_resposta
             END), 2) AS tmrEmpresa,
 
             ROUND(AVG(CASE
                 WHEN nome_fantasia != '${nomeEmpresa}' 
                      AND situacao LIKE 'finalizada%'
-                     AND DATE_FORMAT(data_abertura, '%Y-%m') = '${periodo}'
+                     AND ${filtroData}
                 THEN tempo_resposta
             END), 2) AS tmrConcorrentes
         FROM reclamacoes;
@@ -60,15 +70,17 @@ function getDataComparativoEficiencia(nomeEmpresa, periodo) {
     return database.executar(instrucaoSql);
 }
 
-/* 3) Top 3 Problemas */
+/* 3. Top 3 Problemas */
 function getDataKPITopProblemas(nomeEmpresa, periodo) {
+    const filtroData = gerarFiltroPeriodo(periodo);
+
     var instrucaoSql = `
         SELECT 
             grupo_problema AS nomeProblema,
             COUNT(*) AS quantidade
         FROM reclamacoes
         WHERE nome_fantasia = '${nomeEmpresa}'
-          AND DATE_FORMAT(data_abertura, '%Y-%m') = '${periodo}'
+          AND ${filtroData}
         GROUP BY grupo_problema
         ORDER BY quantidade DESC
         LIMIT 3;
@@ -78,15 +90,17 @@ function getDataKPITopProblemas(nomeEmpresa, periodo) {
     return database.executar(instrucaoSql);
 }
 
-/* 4) Reclamações por Estado */
+/* 4. Reclamações por Estado */
 function getDataReclamacoesPorEstado(nomeEmpresa, periodo) {
+    const filtroData = gerarFiltroPeriodo(periodo);
+
     var instrucaoSql = `
         SELECT 
             uf, 
             COUNT(*) AS qtdProblemas
         FROM reclamacoes
         WHERE nome_fantasia = '${nomeEmpresa}'
-          AND DATE_FORMAT(data_abertura, '%Y-%m') = '${periodo}'
+          AND ${filtroData}
         GROUP BY uf
         ORDER BY qtdProblemas DESC;
     `;
@@ -95,8 +109,10 @@ function getDataReclamacoesPorEstado(nomeEmpresa, periodo) {
     return database.executar(instrucaoSql);
 }
 
-/* 5) Matriz de Prioridade */
+/* 5. Matriz de Prioridade */
 function getDataMatrizPrioridade(nomeEmpresa, periodo) {
+    const filtroData = gerarFiltroPeriodo(periodo);
+
     var instrucaoSql = `
         SELECT 
             grupo_problema AS grupo, 
@@ -109,7 +125,7 @@ function getDataMatrizPrioridade(nomeEmpresa, periodo) {
             2) AS tmf
         FROM reclamacoes
         WHERE nome_fantasia = '${nomeEmpresa}'
-          AND DATE_FORMAT(data_abertura, '%Y-%m') = '${periodo}'
+          AND ${filtroData}
         GROUP BY grupo;
     `;
 
@@ -123,4 +139,4 @@ module.exports = {
     getDataKPITopProblemas,
     getDataReclamacoesPorEstado,
     getDataMatrizPrioridade
-}
+};

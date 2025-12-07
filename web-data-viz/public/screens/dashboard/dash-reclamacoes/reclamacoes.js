@@ -12,18 +12,31 @@ document.addEventListener("DOMContentLoaded", () => {
     gerarCicloUltimos12Meses();
 
     const select = document.getElementById("period");
-    select.addEventListener("change", carregarDadosReclamacoes);
+    select.addEventListener("change", () => {
+        document.getElementById("loading-overlay").style.display = "flex";
+
+        carregarDadosReclamacoes();
+
+        setTimeout(() => {
+            document.getElementById("loading-overlay").style.display = "none";
+        }, 1800);
+    });
 
     carregarDadosReclamacoes();
 });
 
-// GERAR LISTA DE MESES — YYYY-MM
+// GERAR LISTA DE MESES — YYYY-MM + opção "Todos"
 function gerarCicloUltimos12Meses() {
     const select = document.getElementById("period");
     select.innerHTML = "";
 
     const hoje = new Date();
     const anoAnterior = hoje.getFullYear() - 1;
+
+    const optionTodos = document.createElement("option");
+    optionTodos.value = `${anoAnterior}`;   // Apenas o ano
+    optionTodos.textContent = `Todos (${anoAnterior})`;
+    select.appendChild(optionTodos);
 
     const nomesMeses = [
         "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -41,6 +54,7 @@ function gerarCicloUltimos12Meses() {
     }
 }
 
+
 // CHAMADA PRINCIPAL
 function carregarDadosReclamacoes() {
 
@@ -57,6 +71,12 @@ function carregarDadosReclamacoes() {
     atualizarComparativo(nomeEmpresaServer, periodoServer);
     atualizarMapa(nomeEmpresaServer, periodoServer);
     atualizarMatrizPrioridade(nomeEmpresaServer, periodoServer);
+
+    document.getElementById("loading-overlay").style.display = "flex";
+
+    setTimeout(() => {
+        document.getElementById("loading-overlay").style.display = "none";
+    }, 2000);
 }
 
 // KPI 1 — Problema Principal
@@ -69,7 +89,7 @@ function atualizarProblemaPrincipal(nomeEmpresaServer, periodoServer) {
     fetch(`/reclamacoes/getProblemaPrincipal?nomeEmpresaServer=${encodeURIComponent(nomeEmpresaServer)}&periodoServer=${periodoServer}`)
         .then(r => r.json())
         .then(dados => {
-            problemaPrincipal.innerHTML = dados.problemaPrincipal;
+            problemaPrincipal.innerHTML = dados.problemaPrincipal.charAt(0).toUpperCase() + dados.problemaPrincipal.slice(1);
             percentualProblemaPrincipal.innerHTML = dados.percentualFinalizadas;
             totalProblemaPrincipal.innerHTML = dados.quantidadePrincipal;
             totalProblemaPrincipal2.innerHTML = dados.quantidadePrincipal;
@@ -78,14 +98,14 @@ function atualizarProblemaPrincipal(nomeEmpresaServer, periodoServer) {
 }
 
 // KPI 2 — Top Problemas
-function atualizarTopProblemas(nomeEmpresaServer, periodoServer){
+function atualizarTopProblemas(nomeEmpresaServer, periodoServer) {
     const containerTopProblemas = document.getElementById("container-top-problemas");
 
     fetch(`/reclamacoes/getTopProblemas?nomeEmpresaServer=${encodeURIComponent(nomeEmpresaServer)}&periodoServer=${periodoServer}`)
         .then(res => res.json())
-        .then(lista =>{
+        .then(lista => {
             containerTopProblemas.innerHTML = "";
-            lista.forEach((problema, index) =>{
+            lista.forEach((problema, index) => {
                 const ranking = index + 1;
 
                 containerTopProblemas.innerHTML += `
@@ -93,7 +113,8 @@ function atualizarTopProblemas(nomeEmpresaServer, periodoServer){
                         <div class="rank-left">
                             <div class="badge">${ranking}</div>
                             <div class="meta">
-                                <p class="title">${problema.nomeProblema}</p>
+                                <p class="title">${problema.nomeProblema.charAt(0).toUpperCase() + problema.nomeProblema.slice(1)
+                    }</p>
                             </div>
                         </div>
                         <div class="rank-right">
@@ -107,7 +128,7 @@ function atualizarTopProblemas(nomeEmpresaServer, periodoServer){
 }
 
 // KPI 3 — Comparativo
-function atualizarComparativo(nomeEmpresaServer, periodoServer){
+function atualizarComparativo(nomeEmpresaServer, periodoServer) {
     const notaEmpresa = document.getElementById("bar-nota-empresa");
     const notaConcorrentes = document.getElementById("bar-nota-concorrentes");
     const tmrEmpresa = document.getElementById("bar-tmr-empresa");
@@ -118,7 +139,7 @@ function atualizarComparativo(nomeEmpresaServer, periodoServer){
         .then(dados => {
             const maiorNota = Math.max(dados.notaMediaEmpresa, dados.notaMediaConcorrentes);
             const percentualNotaMediaEmpresa = (dados.notaMediaEmpresa / maiorNota) * 100;
-            const percentualNotaMediaConcorrentes = (dados.notaMediaConcorrentes / maiorNota) *100;
+            const percentualNotaMediaConcorrentes = (dados.notaMediaConcorrentes / maiorNota) * 100;
 
             const maiorTmr = Math.max(dados.tmrEmpresa, dados.tmrConcorrentes);
             const percentualTmrEmpresa = (dados.tmrEmpresa / maiorTmr) * 100;
@@ -139,21 +160,51 @@ function atualizarComparativo(nomeEmpresaServer, periodoServer){
         .catch(err => console.error("Falha ao buscar Comparativo", err));
 }
 
+function calcularFaixasDinamicas(dadosMapa) {
+    const valores = Object.values(dadosMapa)
+        .map(v => Number(v))
+        .filter(v => !isNaN(v))
+        .sort((a, b) => a - b);
+
+    if (valores.length === 0) {
+        return { q1: 0, q2: 0, q3: 0 };
+    }
+
+    const q1 = valores[Math.floor(valores.length * 0.25)];
+    const q2 = valores[Math.floor(valores.length * 0.50)];
+    const q3 = valores[Math.floor(valores.length * 0.75)];
+
+    return { q1, q2, q3 };
+}
+
+function atualizarLegenda(q1, q2, q3) {
+    document.querySelector('.region:nth-child(1) p').textContent = `> ${q3}`;
+    document.querySelector('.region:nth-child(2) p').textContent = `> ${q2}`;
+    document.querySelector('.region:nth-child(3) p').textContent = `> ${q1}`;
+    document.querySelector('.region:nth-child(4) p').textContent = `< ${q1}`;
+}
+
+
 // KPI 4 — Mapa por Estado
 function atualizarMapa(nomeEmpresaServer, periodoServer) {
 
     fetch(`/reclamacoes/getReclamacoesPorEstado?nomeEmpresaServer=${encodeURIComponent(nomeEmpresaServer)}&periodoServer=${periodoServer}`)
         .then(res => res.json())
         .then(dados => {
+
             const dadosMapa = {};
             dados.forEach(item => {
                 dadosMapa[item.uf.toUpperCase()] = item.qtdProblemas;
             });
 
+            const { q1, q2, q3 } = calcularFaixasDinamicas(dadosMapa);
+
+            atualizarLegenda(q1, q2, q3);
+
             fetch('../../../map-states-local/brazil-states.geojson.txt')
                 .then(r => r.json())
                 .then(geojson => {
-                    
+
                     if (geoJsonLayer !== null) {
                         map.removeLayer(geoJsonLayer);
                     }
@@ -178,18 +229,14 @@ function atualizarMapa(nomeEmpresaServer, periodoServer) {
                         style: feature => {
                             const uf = feature.properties.sigla;
                             const valor = dadosMapa[uf] || 0;
-                            
-                            const cor = valor >= 1500 ? 'rgba(0, 32, 96, 1)'
-                                      : valor >= 1000 ? 'rgba(0, 64, 160, 1)'
-                                      : valor >= 500  ? 'rgba(0, 112, 255, 1)'
-                                      : 'rgba(122, 191, 255, 1)';
 
-                            return {
-                                color: '#333',
-                                fillColor: cor,
-                                weight: 1,
-                                fillOpacity: 1
-                            };
+                            const cor =
+                                valor >= q3 ? 'rgba(0, 32, 96, 1)' :
+                                    valor >= q2 ? 'rgba(0, 64, 160, 1)' :
+                                        valor >= q1 ? 'rgba(0, 112, 255, 1)' :
+                                            'rgba(122, 191, 255, 1)';
+
+                            return { color: '#FFF', weight: 1, fillColor: cor, fillOpacity: 1 };
                         },
                         onEachFeature: (feature, layer) => {
                             const qtd = dadosMapa[feature.properties.sigla] || 0;
@@ -203,6 +250,7 @@ function atualizarMapa(nomeEmpresaServer, periodoServer) {
         .catch(erro => console.error("Erro ao carregar mapa:", erro));
 }
 
+
 // KPI 5 — Matriz Prioridade
 function atualizarMatrizPrioridade(nomeEmpresaServer, periodoServer) {
     fetch(`/reclamacoes/getMatrizPrioridade?nomeEmpresaServer=${encodeURIComponent(nomeEmpresaServer)}&periodoServer=${periodoServer}`)
@@ -211,9 +259,10 @@ function atualizarMatrizPrioridade(nomeEmpresaServer, periodoServer) {
             const pontos = dados.map(item => ({
                 x: item.quantidade,
                 y: Number(item.tmf),
-                group: item.grupo
+                group: item.grupo.charAt(0).toUpperCase() + item.grupo.slice(1)
+
             }));
-        
+
             const totalQtd = pontos.reduce((soma, item) => soma + item.x, 0);
             const totalTempo = pontos.reduce((soma, item) => soma + item.y, 0);
 
@@ -245,15 +294,15 @@ function atualizarMatrizPrioridade(nomeEmpresaServer, periodoServer) {
                             pointRadius: 8,
                             pointHoverRadius: 10,
                             backgroundColor: 'rgba(0, 97, 216, 0.8)',
-                            
+
                             datalabels: {
                                 display: 'auto',
-                                formatter: v => v.group, 
+                                formatter: v => v.group,
                                 anchor: 'end',
                                 align: 'right',
                                 color: 'black',
                                 font: { size: 11, weight: 'bold' },
-                                clamp: true 
+                                clamp: true
                             }
                         },
                         // Linha Vertical (Média Qtd)
@@ -261,7 +310,7 @@ function atualizarMatrizPrioridade(nomeEmpresaServer, periodoServer) {
                             label: `Média Qtd: ${mediaQtd.toFixed(0)}`,
                             type: 'line',
                             data: [{ x: mediaQtd, y: 0 }, { x: mediaQtd, y: limiteEixoY }],
-                            borderColor: 'rgba(250,204,21,0.95)', 
+                            borderColor: 'rgba(250,204,21,0.95)',
                             borderWidth: 2,
                             pointRadius: 0,
                             borderDash: [6, 6],
@@ -272,7 +321,7 @@ function atualizarMatrizPrioridade(nomeEmpresaServer, periodoServer) {
                             label: `Média Tempo: ${mediaTempo.toFixed(1)}h`,
                             type: 'line',
                             data: [{ x: 0, y: mediaTempo }, { x: limiteEixoX, y: mediaTempo }],
-                            borderColor: 'rgba(52,211,153,0.95)', 
+                            borderColor: 'rgba(52,211,153,0.95)',
                             borderWidth: 2,
                             pointRadius: 0,
                             borderDash: [6, 6],
