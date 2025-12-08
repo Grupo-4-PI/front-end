@@ -22,6 +22,7 @@ var reclamacoesRouter = require("./src/routes/reclamacoes")
 var perfilRouter = require("./src/routes/perfil")
 var desempenhoInterno = require("./src/routes/desempenhoInterno")
 var benchmarkRouter = require("./src/routes/benchmark")
+var suporteRouter = require("./src/routes/suporte")
 
 var tipoAcessoRouter = require("./src/routes/tipoAcesso")
 
@@ -38,8 +39,8 @@ app.use("/reclamacoes", reclamacoesRouter);
 app.use("/perfil", perfilRouter);
 app.use("/desempenhoInterno", desempenhoInterno);
 app.use("/benchmark", benchmarkRouter);
-
-app.use("/tipoAcesso", tipoAcessoRouter)
+app.use("/benchmark", benchmarkRouter);
+app.use("/suporte", suporteRouter);
 
 app.listen(PORTA_APP, function () {
     console.log(`
