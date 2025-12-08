@@ -559,7 +559,7 @@ section {
                 justify-content: center;
 
                 #map {
-                    width: 90%;
+                    width: 100%;
                     height: 240px;
                     background-color: transparent;
                 }

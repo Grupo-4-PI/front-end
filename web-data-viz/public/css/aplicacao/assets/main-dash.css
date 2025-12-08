@@ -87,3 +87,35 @@ main {
 main.collapsed {
     margin-left: 70px;
 }
+
+/* Fundo preto transparente cobrindo a tela toda */
+#loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(114, 114, 114, 0.4);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+
+    display: none;
+}
+
+.loader {
+    width: 60px;
+    height: 60px;
+    border: 6px solid #ffffff;
+    border-top-color: #00aaff;
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

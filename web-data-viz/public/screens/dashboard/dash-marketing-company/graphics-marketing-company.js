@@ -3,7 +3,15 @@ document.addEventListener("DOMContentLoaded", () => {
     gerarCicloUltimos12Meses();
 
     const select = document.getElementById("period");
-    select.addEventListener("change", carregarDesempenhoInterno);
+    select.addEventListener("change", () => {
+        document.getElementById("loading-overlay").style.display = "flex";
+
+        carregarDesempenhoInterno();
+
+        setTimeout(() => {
+            document.getElementById("loading-overlay").style.display = "none";
+        }, 1800);
+    });
 
     carregarDesempenhoInterno();
 });
@@ -16,12 +24,16 @@ function gerarCicloUltimos12Meses() {
     const hoje = new Date();
     const anoAnterior = hoje.getFullYear() - 1;
 
+    const optionTodos = document.createElement("option");
+    optionTodos.value = `${anoAnterior}`;
+    optionTodos.textContent = `Todos (${anoAnterior})`;
+    select.appendChild(optionTodos);
+
     const nomesMeses = [
         "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
         "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
     ];
 
-    // Gera os 12 meses do ano anterior
     for (let mes = 11; mes >= 0; mes--) {
         const texto = `${nomesMeses[mes]}/${anoAnterior}`;
         const value = `${anoAnterior}-${String(mes + 1).padStart(2, "0")}`;
@@ -32,7 +44,6 @@ function gerarCicloUltimos12Meses() {
         select.appendChild(option);
     }
 }
-
 // 3. CARREGAR DADOS DO BACKEND
 function carregarDesempenhoInterno() {
     const userData = JSON.parse(sessionStorage.getItem("data_user"));
@@ -47,6 +58,12 @@ function carregarDesempenhoInterno() {
     cargoUsuario.innerHTML = cargoUsuarioServer;
 
     const periodoSelecionado = document.getElementById("period").value;
+
+    document.getElementById("loading-overlay").style.display = "flex";
+
+    setTimeout(() => {
+        document.getElementById("loading-overlay").style.display = "none";
+    }, 1800);
 
     fetch(
         `/desempenhoInterno/DadosDesempenhoInterno?idEmpresaServer=${encodeURIComponent(
@@ -161,10 +178,31 @@ function atualizarMapa(dadosMapaBruto) {
     graficoMapaDelta(dadosMapa);
 }
 
+const limites = [
+    { min: 1.3, cor: 'rgba(0, 8, 51, 1)' },
+    { min: 0.7, cor: 'rgba(0, 64, 128, 1)' },
+    { min: 0.3, cor: 'rgba(0, 96, 192, 1)' },
+    { min: 0.1, cor: 'rgba(0, 128, 255, 1)' },
+    { min: -0.1, cor: 'rgba(102, 178, 255, 1)' },
+    { min: -0.5, cor: 'rgba(153, 204, 255, 1)' },
+    { min: -Infinity, cor: 'rgba(204, 229, 255, 1)' }
+];
+
+
+function corPorValor(valor) {
+    for (let i = limites.length - 1; i >= 0; i--) {
+        if (valor < limites[i].min) {
+            return limites[i].cor;
+        }
+    }
+
+    return limites[0].cor;
+}
+
+
 // 9. GRÁFICO — MAPA DELTA
 function graficoMapaDelta(dados) {
     try {
-        // Se já existe um mapa inicializado, remova-o completamente
         if (mapInstance) {
             try {
                 mapInstance.remove();
@@ -198,26 +236,21 @@ function graficoMapaDelta(dados) {
                 return r.json();
             })
             .then(geojson => {
-                // Cria layer GeoJSON (mantendo referência para possível remoção futura)
                 geoJsonLayer = L.geoJSON(geojson, {
                     style: feature => {
-                        const uf = feature.properties.sigla;
+                        const uf = feature.properties.sigla.toLowerCase();
                         const valor = dados[uf] || 0;
-                        const cor =
-                            valor > 1 ? 'rgba(55, 0, 179, 1)' :
-                                valor > 0 ? 'rgba(106, 0, 255, 1)' :
-                                    valor > -1 ? 'rgba(0, 112, 255, 1)' :
-                                        'rgba(102, 178, 255, 1)';
+                        const cor = corPorValor(valor);
 
                         return {
-                            color: '#333',
+                            color: '#ffffffff',
                             fillColor: cor,
                             weight: 1,
-                            fillOpacity: 0.6
+                            fillOpacity: 1
                         };
                     },
                     onEachFeature: (feature, layer) => {
-                        layer.bindPopup(`${feature.properties.name}: ${dados[feature.properties.sigla] || 0}`);
+                        layer.bindPopup(`${feature.properties.name}: ${dados[feature.properties.sigla.toLowerCase()] || 0}`);
                     }
                 }).addTo(mapInstance);
 
@@ -320,7 +353,6 @@ function graficoEvolucao(dadosEmpresa, dadosMercado) {
 // 11. RANKING DELTA MAPA
 function atualizarRankingEstados(dadosMapaBruto) {
     const container = document.getElementById("rank-estados");
-    console.log(container)
 
     container.innerHTML = "";
 

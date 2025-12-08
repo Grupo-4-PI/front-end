@@ -19,7 +19,15 @@ document.addEventListener("DOMContentLoaded", () => {
     gerarCicloUltimos12Meses();
 
     const select = document.getElementById("period");
-    select.addEventListener("change", carregarVisaoGeral);
+    select.addEventListener("change", () => {
+        document.getElementById("loading-overlay").style.display = "display";
+
+        carregarVisaoGeral();
+
+        setTimeout(() => {
+            document.getElementById("loading-overlay").style.display = "none";
+        }, 1800);
+    });
 
     carregarVisaoGeral();
 });
@@ -32,6 +40,11 @@ function gerarCicloUltimos12Meses() {
 
     const hoje = new Date();
     const anoAnterior = hoje.getFullYear() - 1;
+
+    const optionTodos = document.createElement("option");
+    optionTodos.value = `${anoAnterior}`;   // Apenas o ano
+    optionTodos.textContent = `Todos (${anoAnterior})`;
+    select.appendChild(optionTodos);
 
     const nomesMeses = [
         "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -50,10 +63,16 @@ function gerarCicloUltimos12Meses() {
 }
 
 
+
 // 3. CARREGAR DADOS DA VISÃO GERAL
 function carregarVisaoGeral() {
     const period = document.getElementById("period").value;
-    console.log("Carregando visão geral com período:", period);
+
+    document.getElementById("loading-overlay").style.display = "flex";
+
+    setTimeout(() => {
+        document.getElementById("loading-overlay").style.display = "none";
+    }, 2000);
 
     fetch(`/visaoGeral/dadosDashVisaoGeral?periodoServer=${encodeURIComponent(
         period
@@ -123,7 +142,7 @@ let graficoEstadosInstance = null;
 function atualizarGraficoEstados(dados) {
     if (!dados || dados.length === 0) return;
 
-    const uf = dados.map(x => x.uf);
+    const uf = dados.map(x => (x.uf ? x.uf.toUpperCase() : ""));
     const media = dados.map(x => x.media_nota);
     const total = dados.map(x => x.total);
 
