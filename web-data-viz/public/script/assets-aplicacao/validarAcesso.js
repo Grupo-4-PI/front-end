@@ -1,4 +1,4 @@
-fetch(`/perfil/findAll`)
+fetch(`/tipoAcesso/telas/${1}`)
     .then((resposta) => {
         if (!resposta.ok) {
             throw new Error("Erro ao buscar dados da visão geral");
