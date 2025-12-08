@@ -3,6 +3,7 @@ const navlinks = Array.from(all).slice(0, -1);
 
 navlinks.forEach((nav, index) => {
     nav.id = index + 1;
+    nav.style.display = 'none'
 });
 
 let user = JSON.parse(
