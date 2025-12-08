@@ -1,14 +1,16 @@
 const data_user = JSON.parse(
     sessionStorage.getItem("data_user")
 );
+import { imgGrupoProblemas } from "../../../script/assets-aplicacao/json-grupo-problema.js";
 
+let nomeUsuario = document.getElementById("nome_usuario");
+let cargoUsuario = document.getElementById("cargo_usuario");
 const idEmpresaServer = data_user.idEmpresa;
 const nomeUsuarioServer = data_user.nome;
 const cargoUsuarioServer = data_user.cargo;
 
 document.addEventListener("DOMContentLoaded", () => {
-    nomeUsuario = document.getElementById("nome_usuario");
-    cargoUsuario = document.getElementById("cargo_usuario");
+
 
     nomeUsuario.innerHTML = nomeUsuarioServer;
     cargoUsuario.innerHTML = cargoUsuarioServer;
@@ -207,14 +209,22 @@ function atualizarTMR(dados) {
 function atualizarKpiGrupoProblema(dados) {
     const kpis_grupo = document.querySelectorAll(".type-problem");
     const kpis_score = document.querySelectorAll(".data-score p");
+    const icon_kpis = document.querySelectorAll(".icon-problem");
+
+    console.log(icon_kpis)
 
     dados.gruposProblemas.forEach((grupo, index) => {
         kpis_grupo[index].textContent = grupo.grupo_problema;
 
-        console.log(grupo.media_empresa)
-
         let media = Number(grupo.media_empresa).toFixed(2);
         kpis_score[index].textContent = media + "/5"
+
+        imgGrupoProblemas.forEach(img => {
+            if (img.name == grupo.grupo_problema.toLowerCase()) {
+                console.log('Entrei')
+                icon_kpis[index].src = img.img;
+            }
+        })
     });
 
 }

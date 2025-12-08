@@ -1,3 +1,5 @@
+import { imgGrupoProblemas } from "../../../script/assets-aplicacao/json-grupo-problema.js";
+
 let map = null;
 let geoJsonLayer = null;
 let scatterChartInstance = null;
@@ -80,6 +82,8 @@ function carregarDadosReclamacoes() {
 }
 
 // KPI 1 — Problema Principal
+const imgGroup = document.getElementById('img-group-problem');
+
 function atualizarProblemaPrincipal(nomeEmpresaServer, periodoServer) {
     const problemaPrincipal = document.querySelector(".problem-label");
     const percentualProblemaPrincipal = document.querySelector(".kpi-pp-percentual");
@@ -93,6 +97,12 @@ function atualizarProblemaPrincipal(nomeEmpresaServer, periodoServer) {
             percentualProblemaPrincipal.innerHTML = dados.percentualFinalizadas;
             totalProblemaPrincipal.innerHTML = dados.quantidadePrincipal;
             totalProblemaPrincipal2.innerHTML = dados.quantidadePrincipal;
+
+            imgGrupoProblemas.forEach(img =>{
+                if(img.name == dados.problemaPrincipal){
+                    imgGroup.src = img.img;
+                }
+            })
         })
         .catch(err => console.error("Falha ao buscar Problema Principal", err));
 }
