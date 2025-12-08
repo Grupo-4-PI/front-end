@@ -91,68 +91,67 @@
     </aside>
 
     <main role="main" aria-label="Conteúdo principal">
-        <header class="header" role="banner" aria-label="Barra superior do painel">
-            <div class="header-left">
-                <h1 class="page-title">Meus Tickets</h1>
-                <p class="subtitle">Abra chamados e abra chamados</p>
-            </div>
-
-            <button class="btn-novo">+ Novo Chamado</button>
-        </header>
-
-        <div class="ticket-board">
-            <div class="ticket-item">
-
-                <div class="ticket-header">
-                    <div>
-                        <p class="ticket-code">#CHM-0183</p>
-                        <h2 class="ticket-title">Erro ao acessar dashboard</h2>
-                    </div>
-                    <span class="status open">Aberto</span>
-                </div>
-
-                <div class="ticket-info-grid">
-                    <div class="info-block">
-                        <label>Categoria</label>
-                        <p>Login</p>
-                    </div>
-
-                    <div class="info-block">
-                        <label>Prioridade</label>
-                        <p>Alta</p>
-                    </div>
-
-                    <div class="info-block">
-                        <label>Criado em</label>
-                        <p>12/11/2025</p>
-                    </div>
-
-                    <div class="info-block">
-                        <label>Atualizado em</label>
-                        <p>14/11/2025</p>
-                    </div>
-                </div>
-
-                <div class="ticket-footer">
-                    <div class="resposta">
-                        <label>Última resposta</label>
-                        <p>Ainda não respondido</p>
-                    </div>
-
-                    <div class="actions">
-                        <button class="edit">Editar</button>
-                        <button class="delete">Excluir</button>
-                    </div>
-                </div>
-
-            </div>
+    <header class="header" role="banner" aria-label="Barra superior do painel">
+        <div class="header-left">
+            <h1 class="page-title">Meus Tickets</h1>
+            <p class="subtitle">Crie e veja seus chamados</p>
         </div>
 
-    </main>
-</body>
+        <button class="btn-novo" onclick="abrirModal('modalNovoTicket')">+ Novo Chamado</button>
+    </header>
 
+    <div class="ticket-board">
+        </div>
+</main>
 
-<!-- bibliotecas -->
-<script src="../../../script/assets-aplicacao/sidebar.js"></script>
+<div id="modalNovoTicket" class="modal hidden">
+    <div class="container">
+        <div class="form-box">
+            <h2>Novo Chamado</h2>
+            <form id="formNovoTicket">
+                
+                <div>
+                    <label for="titulo_ticket">Título do Problema</label>
+                    <input type="text" id="titulo_ticket" placeholder="Resumo curto do problema" required />
+                </div>
+
+                <div>
+                    <label for="categoria_ticket">Categoria</label>
+                    <select id="categoria_ticket" required>
+                        <option value="" disabled selected>Selecione a categoria</option>
+                        <option value="Acesso/Login">Problemas de Acesso/Login</option>
+                        <option value="Dashboard">Erro na Dashboard</option>
+                        <option value="Dados incorretos">Dados Incorretos</option>
+                        <option value="Lentidao">Lentidão no Sistema</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="impacto_ticket">Impacto</label>
+                    <select id="impacto_ticket" required>
+                        <option value="" disabled selected>Selecione o impacto</option>
+                        <option value="Baixa">Baixa (Não impede o uso)</option>
+                        <option value="Media">Média (Dificulta o uso)</option>
+                        <option value="Alta">Alta (Sistema parado)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="descricao_ticket">Descrição Detalhada</label>
+                    <textarea id="descricao_ticket" rows="5" placeholder="Descreva o que aconteceu..." required style="width: 100%; padding: 10px; border: 1px solid #cfd2d8; border-radius: 8px; resize: vertical;"></textarea>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button type="submit" class="btn-azul" style="flex: 1;">Criar Ticket</button>
+                    <button type="button" class="btn-cinza" style="flex: 1;" onclick="fecharModal('modalNovoTicket')">Cancelar</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="suporte.js"></script>
 
 </html>
