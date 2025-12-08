@@ -2,7 +2,7 @@ const all = document.querySelectorAll(".menu .menu-btn");
 const navlinks = Array.from(all).slice(0, -1);
 
 navlinks.forEach((nav, index) => {
-    nav.id = index;
+    nav.id = index + 1;
 });
 
 let user = JSON.parse(
@@ -17,10 +17,11 @@ fetch(`/tipoAcesso/telas/${user.perfilAcesso}`)
         return resposta.json();
     })
     .then((dados) => {
-        dados.forEach( d =>{
-            navlinks.forEach( nav =>{
-                if(nav.id == d.idTela){
-                    nav.style.display = 'none'
+        dados.forEach(d => {
+            navlinks.forEach(nav => {
+                if (nav.id == d.idTela) {
+                    console.log(nav.id, d)
+                    nav.style.display = 'flex'
                 }
             })
         });
