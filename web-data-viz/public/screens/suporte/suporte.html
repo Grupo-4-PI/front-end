@@ -119,21 +119,19 @@
                     <label for="categoria_ticket">Categoria</label>
                     <select id="categoria_ticket" required>
                         <option value="" disabled selected>Selecione a categoria</option>
-                        <option value="Acesso/Login">Problemas de Acesso/Login</option>
+                        <option value="Login">Problemas de Login</option>
                         <option value="Dashboard">Erro na Dashboard</option>
-                        <option value="Dados incorretos">Dados Incorretos</option>
-                        <option value="Lentidao">Lentidão no Sistema</option>
-                        <option value="Outros">Outros</option>
+                        <option value="Perfil">Configuração de Perfil</option>
                     </select>
                 </div>
-
+                
                 <div>
                     <label for="impacto_ticket">Impacto</label>
                     <select id="impacto_ticket" required>
                         <option value="" disabled selected>Selecione o impacto</option>
-                        <option value="Baixa">Baixa (Não impede o uso)</option>
-                        <option value="Media">Média (Dificulta o uso)</option>
-                        <option value="Alta">Alta (Sistema parado)</option>
+                        <option value="Baixo">Baixo (Não impede o uso)</option>
+                        <option value="Medio">Médio (Dificulta o uso)</option>
+                        <option value="Alto">Alto (Sistema parado)</option>
                     </select>
                 </div>
 
@@ -151,6 +149,63 @@
         </div>
     </div>
 </div>
+
+<div id="modalEditarTicket" class="modal hidden">
+        <div class="container">
+            <div class="form-box">
+                <h2>Editar Chamado</h2>
+                <form id="formEditarTicket">
+                    <input type="hidden" id="id_ticket_editar"> <div>
+                        <label for="titulo_editar">Título do Problema</label>
+                        <input type="text" id="titulo_editar" required />
+                    </div>
+
+                    <div>
+                        <label for="categoria_editar">Categoria</label>
+                        <select id="categoria_editar" required>
+                            <option value="Login">Problemas de Login</option>
+                            <option value="Dashboard">Erro na Dashboard</option>
+                            <option value="Perfil">Configuração de Perfil</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="impacto_editar">Impacto</label>
+                        <select id="impacto_editar" required>
+                            <option value="Baixo">Baixo</option>
+                            <option value="Medio">Médio</option>
+                            <option value="Alto">Alto</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="descricao_editar">Descrição Detalhada</label>
+                        <textarea id="descricao_editar" rows="5" required style="width: 100%; padding: 10px; border: 1px solid #cfd2d8; border-radius: 8px; resize: vertical;"></textarea>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <button type="submit" class="btn-azul" style="flex: 1;">Salvar Alterações</button>
+                        <button type="button" class="btn-cinza" style="flex: 1;" onclick="fecharModal('modalEditarTicket')">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalExcluirTicket" class="modal hidden">
+        <div class="container" style="max-width: 400px;">
+            <div class="form-box">
+                <h2 style="color: #e63946;">Excluir Chamado</h2>
+                <p style="text-align: center; margin-bottom: 20px; color: #555;">
+                    Tem certeza que deseja excluir este ticket? <br>Essa ação não pode ser desfeita.
+                </p>
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button type="button" id="btnConfirmarExclusao" class="btn-azul" style="background: #e63946;">Sim, Excluir</button>
+                    <button type="button" class="btn-cinza" onclick="fecharModal('modalExcluirTicket')">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 <script src="suporte.js"></script>
 
