@@ -54,14 +54,16 @@ function getDataComparativoEficiencia(nomeEmpresa, periodo) {
                 WHEN nome_fantasia = '${nomeEmpresa}' 
                      AND situacao LIKE 'finalizada%'
                      AND ${filtroData}
-                THEN tempo_resposta
+                THEN (TIMESTAMPDIFF(HOUR, data_abertura, data_finalizacao) / 24)
+                ELSE NULL
             END), 2) AS tmrEmpresa,
 
             ROUND(AVG(CASE
                 WHEN nome_fantasia != '${nomeEmpresa}' 
                      AND situacao LIKE 'finalizada%'
                      AND ${filtroData}
-                THEN tempo_resposta
+                THEN (TIMESTAMPDIFF(HOUR, data_abertura, data_finalizacao) / 24)
+                ELSE NULL
             END), 2) AS tmrConcorrentes
         FROM reclamacoes;
     `;

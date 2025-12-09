@@ -161,10 +161,10 @@ function atualizarComparativo(nomeEmpresaServer, periodoServer) {
             notaConcorrentes.innerHTML = dados.notaMediaConcorrentes;
             notaConcorrentes.style.height = `${percentualNotaMediaConcorrentes}%`
 
-            tmrEmpresa.innerHTML = dados.tmrEmpresa + "hrs";
+            tmrEmpresa.innerHTML = dados.tmrEmpresa + "d";
             tmrEmpresa.style.height = `${percentualTmrEmpresa}%`;
 
-            tmrConcorrentes.innerHTML = dados.tmrConcorrentes + "hrs";
+            tmrConcorrentes.innerHTML = dados.tmrConcorrentes + "d";
             tmrConcorrentes.style.height = `${percentualTmrConcorrentes}%`;
         })
         .catch(err => console.error("Falha ao buscar Comparativo", err));
