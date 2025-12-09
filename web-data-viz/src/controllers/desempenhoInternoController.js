@@ -29,7 +29,7 @@ function getDesemprenhoInterno(req, res) {
         });
 
     const RankingEmpresa = desempenhoInternoModel
-        .getRankingEmpresa(idEmpresa, periodo)
+        .getRankingEmpresa(periodo, idEmpresa)
         .catch((erro) => {
             console.log("Erro Ranking Empresa:", erro);
             return null;

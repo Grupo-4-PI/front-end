@@ -2,16 +2,16 @@ var database = require("../database/config");
 
 // ---------------- FUNÇÃO PADRÃO DE FILTRO DE PERÍODO ----------------
 function gerarFiltroPeriodo(periodo) {
-  return periodo.length === 4
-    ? `DATE_FORMAT(data_abertura, '%Y') = '${periodo}'`
-    : `DATE_FORMAT(data_abertura, '%Y-%m') = '${periodo}'`;
+    return periodo.length === 4
+        ? `DATE_FORMAT(data_abertura, '%Y') = '${periodo}'`
+        : `DATE_FORMAT(data_abertura, '%Y-%m') = '${periodo}'`;
 }
 
 // ---------------- PANORAMA (TOP 3 MELHORES) ----------------
 function getPanoramaKPI(periodo) {
-  const filtro = gerarFiltroPeriodo(periodo);
+    const filtro = gerarFiltroPeriodo(periodo);
 
-  var instrucaoSql = `
+    var instrucaoSql = `
         SELECT 
             e.idEmpresa,
             e.nomeFantasia,
@@ -28,15 +28,15 @@ function getPanoramaKPI(periodo) {
         LIMIT 3;
     `;
 
-  console.log("Executando SQL getPanoramaKPI:\n" + instrucaoSql);
-  return database.executar(instrucaoSql);
+    console.log("Executando SQL getPanoramaKPI:\n" + instrucaoSql);
+    return database.executar(instrucaoSql);
 }
 
 // ---------------- MÉDIA EMPRESA x MERCADO ----------------
 function getNotaMedia(idEmpresa, periodo) {
-  const filtro = gerarFiltroPeriodo(periodo);
+    const filtro = gerarFiltroPeriodo(periodo);
 
-  var instrucaoSql = `
+    var instrucaoSql = `
         SELECT 
             TRUNCATE(AVG(CASE WHEN fkEmpresa = ${idEmpresa} THEN nota_consumidor END), 2) AS media_empresa,
             TRUNCATE(AVG(CASE WHEN fkEmpresa <> ${idEmpresa} THEN nota_consumidor END), 2) AS media_mercado,
@@ -57,55 +57,44 @@ function getNotaMedia(idEmpresa, periodo) {
         WHERE ${filtro};
     `;
 
-  console.log("Executando SQL getNotaMedia:\n" + instrucaoSql);
-  return database.executar(instrucaoSql);
+    console.log("Executando SQL getNotaMedia:\n" + instrucaoSql);
+    return database.executar(instrucaoSql);
 }
 
 // ---------------- RANKING DA EMPRESA ----------------
-function getRankingEmpresa(idEmpresa) {
-  var instrucaoSql = `
+function getRankingEmpresa(periodo, idEmpresa) {
+    const filtro = gerarFiltroPeriodo(periodo);
+
+    var instrucaoSql = `
         SELECT 
-            idEmpresa,
-            nomeFantasia,
-            mes,
-            ano,
-            posicao
+            t.idEmpresa,
+            t.nomeFantasia,
+            t.media_nota,
+            t.posicao
         FROM (
-            SELECT 
-                idEmpresa,
-                nomeFantasia,
-                mes,
-                ano,
-                mediaNota,
-                RANK() OVER (PARTITION BY ano, mes ORDER BY mediaNota DESC) AS posicao
-            FROM (
-                SELECT 
-                    e.idEmpresa,
-                    e.nomeFantasia,
-                    MONTH(r.data_abertura) AS mes,
-                    YEAR(r.data_abertura) AS ano,
-                    TRUNCATE(AVG(r.nota_consumidor), 2) AS mediaNota
-                FROM empresa e
-                JOIN reclamacoes r ON r.fkEmpresa = e.idEmpresa
-                GROUP BY 
-                    e.idEmpresa, 
-                    e.nomeFantasia,
-                    MONTH(r.data_abertura),
-                    YEAR(r.data_abertura)
-            ) AS medias
-        ) AS ranking
-        WHERE idEmpresa = ${idEmpresa};
+            SELECT
+                e.idEmpresa,
+                e.nomeFantasia,
+                ROUND(AVG(r.nota_consumidor), 2) AS media_nota,
+                DENSE_RANK() OVER (ORDER BY AVG(r.nota_consumidor) DESC) AS posicao
+            FROM empresa e
+            JOIN reclamacoes r ON r.fkEmpresa = e.idEmpresa
+            WHERE ${filtro}
+            GROUP BY e.idEmpresa, e.nomeFantasia
+        ) AS t
+        WHERE t.idEmpresa = ${idEmpresa};
     `;
 
-  console.log("Executando SQL getRankingEmpresa:\n" + instrucaoSql);
-  return database.executar(instrucaoSql);
+    console.log("Executando SQL getRankingEmpresa:\n" + instrucaoSql);
+    return database.executar(instrucaoSql);
 }
+
 
 // ---------------- MAPA DELTA POR UF ----------------
 function getGraficoMapaDeltaMercado(idEmpresa, periodo) {
-  const filtro = gerarFiltroPeriodo(periodo);
+    const filtro = gerarFiltroPeriodo(periodo);
 
-  var instrucaoSql = `
+    var instrucaoSql = `
         SELECT 
             r.uf,
 
@@ -131,15 +120,15 @@ function getGraficoMapaDeltaMercado(idEmpresa, periodo) {
         ORDER BY delta DESC;
     `;
 
-  console.log("Executando SQL getGraficoMapaDeltaMercado:\n" + instrucaoSql);
-  return database.executar(instrucaoSql);
+    console.log("Executando SQL getGraficoMapaDeltaMercado:\n" + instrucaoSql);
+    return database.executar(instrucaoSql);
 }
 
 // ---------------- EVOLUÇÃO MENSAL ----------------
 function getGraficoEvolucao(idEmpresa, periodo) {
-  const filtro = gerarFiltroPeriodo(periodo);
+    const filtro = gerarFiltroPeriodo(periodo);
 
-  var instrucaoSql = `
+    var instrucaoSql = `
         SELECT
             DATE_FORMAT(r.data_abertura, '%Y-%m') AS mes,
 
@@ -165,14 +154,14 @@ function getGraficoEvolucao(idEmpresa, periodo) {
         ORDER BY mes;
     `;
 
-  console.log("Executando SQL getGraficoEvolucao:\n" + instrucaoSql);
-  return database.executar(instrucaoSql);
+    console.log("Executando SQL getGraficoEvolucao:\n" + instrucaoSql);
+    return database.executar(instrucaoSql);
 }
 
 module.exports = {
-  getPanoramaKPI,
-  getNotaMedia,
-  getRankingEmpresa,
-  getGraficoMapaDeltaMercado,
-  getGraficoEvolucao
+    getPanoramaKPI,
+    getNotaMedia,
+    getRankingEmpresa,
+    getGraficoMapaDeltaMercado,
+    getGraficoEvolucao
 };
