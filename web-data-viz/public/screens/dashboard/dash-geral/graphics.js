@@ -93,8 +93,8 @@ function carregarVisaoGeral() {
 // 4. KPIs
 function atualizarKPIs(kpis) {
     document.getElementById("total_chamados").innerText = kpis[0].total_reclamacoes;
-    document.getElementById("taxa_solucao").innerText = kpis[0].taxa_resolucao;
-    document.getElementById("tempo_resposta").innerText = kpis[0].media_tempo_resposta;
+    document.getElementById("taxa_solucao").innerText = `${kpis[0].taxa_resolucao}%`;
+    document.getElementById("tempo_resposta").innerText = `${kpis[0].media_tempo_resposta} dias`;
     document.getElementById("kpi_nota").innerText = kpis[0].media_nota_consumidor;
 }
 

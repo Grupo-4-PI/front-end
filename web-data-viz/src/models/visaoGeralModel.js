@@ -15,7 +15,7 @@ function getDataKPIsVisaoGeral(nomeEmpresa, periodo) {
         SELECT
             COUNT(*) AS total_reclamacoes,
             ROUND(
-              (SUM(CASE WHEN situacao = 'Resolvida' THEN 1 ELSE 0 END) / COUNT(*)) * 100,
+              (SUM(CASE WHEN situacao LIKE 'finalizada%' THEN 1 ELSE 0 END) / COUNT(*)) * 100,
               2
             ) AS taxa_resolucao,
             ROUND(AVG(tempo_resposta), 2) AS media_tempo_resposta,
