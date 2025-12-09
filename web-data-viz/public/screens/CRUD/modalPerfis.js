@@ -6,6 +6,19 @@ let listaTelas = [];
 // INICIALIZAÇÃO
 // ===============================
 document.addEventListener("DOMContentLoaded", () => {
+
+    const nomeEmpresaBruto = JSON.parse(sessionStorage.getItem("data_user"));
+
+    const nomeEmpresaServer = nomeEmpresaBruto.nomeEmpresa;
+    const nomeUsuarioServer = nomeEmpresaBruto.nome;
+    const cargoUsuarioServer = nomeEmpresaBruto.cargo;
+
+    const nomeUsuario = document.getElementById("nome_usuario");
+    const cargoUsuario = document.getElementById("cargo_usuario");
+
+    nomeUsuario.innerHTML = nomeUsuarioServer;
+    cargoUsuario.innerHTML = cargoUsuarioServer;
+
     carregarTelas();
     carregarPerfis();
 });
