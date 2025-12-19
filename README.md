@@ -101,7 +101,7 @@ Neste contexto, o projeto **AirWise** tem como objetivo oferecer uma solução q
       <a href="https://github.com/raycasagrande">Rayssa Casagrande</a>
     </td>
     <td align="center">
-      <img src="https://github.com/guigtoledo.png" alt="Imagem Guilherme Toledo" width="100" height="100"><br>
+      <img src="https://github.com/g-toledo.png" alt="Imagem Guilherme Toledo" width="100" height="100"><br>
       <a href="https://github.com/guigtoledo">Guilherme Toledo</a>
     </td>
     <td align="center">
